@@ -1,0 +1,29 @@
+### Obtener todas las provincias
+GET http://localhost:3000/api/provincias
+
+### Obtener una provincia específica
+
+GET http://localhost:3000/api/provincias/123e4567-e89b-12d3-a456-426614174000
+
+### Crear una nueva provincia
+
+POST http://localhost:3000/api/provincias
+Content-Type: application/json
+
+{
+  "nombre": "Santa Cruz"
+}
+
+### Modificar una provincia existente (PUT)
+
+PUT http://localhost:3000/api/provincias/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "nombre": "Santa Cruz del Sur"
+}
+
+### Eliminar una provincia
+DELETE http://localhost:3000/api/provincias/123e4567-e89b-12d3-a456-426614174000
+
+
