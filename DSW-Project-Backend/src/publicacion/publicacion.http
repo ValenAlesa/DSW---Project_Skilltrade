@@ -10,7 +10,7 @@ Content-Type: application/json
     "descripcion": "Se realizan todo tipo de reparaciones",
     "estado": "Aprobada",
     "cliente": 1,
-    "servicio": 1  
+    "servicio": 100  
 }
 
 ### ID 
@@ -27,7 +27,7 @@ Content-Type: application/json
     "descripcion": "Se realizan todo tipo de reparaciones y mantenimiento",
     "estado": "Rechazada",
     "cliente": 1,
-    "servicio": 1
+    "servicio": 101
 }
 
 ### POST CIUDAD TO DELETE
@@ -39,7 +39,7 @@ Content-Type: application/json
     "descripcion": "Se realiza todo tipo de limpieza",
     "estado": "Pendiente",
     "cliente": 1,
-    "servicio": 1
+    "servicio": 103
 }
 
 
