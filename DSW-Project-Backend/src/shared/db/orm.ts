@@ -7,7 +7,7 @@ const ormConfig = defineConfig({
   entitiesTs: ["src/**/*.entity.ts"],
   dbName: "tienda_virtual",
   user: "root",
-  password: "Hola2025",
+  password: "root",
   host: "localhost",
   port: 3306,
   highlighter: new SqlHighlighter(),

@@ -1,12 +1,19 @@
-import { Entity, Property, ManyToOne, OneToMany, Ref, Collection, Cascade } from '@mikro-orm/core';
+import { Entity, Property, ManyToOne, OneToMany, Ref, Collection, Cascade, Enum } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
-import { Publicacion } from './publicacion.entity.js';
+import { Publicacion } from '../publicacion/publicacion.entity.js';
 import { Ciudad } from '../provincia/ciudad.entity.js';
 
+export enum RolUsuario {
+  CLIENTE = 'CLIENTE',
+  ADMINISTRADOR = 'ADMINISTRADOR'
+}
 
 @Entity()
-export class Cliente extends BaseEntity {
+export class Usuario extends BaseEntity {
   
+  @Enum(() => RolUsuario)
+  rol: RolUsuario = RolUsuario.CLIENTE;
+
   @Property({ nullable: false, type: 'string' })
   mail!: string;
 
@@ -22,7 +29,7 @@ export class Cliente extends BaseEntity {
   @ManyToOne({ entity: () => Ciudad, nullable: false })
   ciudad!: Ref<Ciudad>;
 
-  @OneToMany(() => Publicacion, (publicacion) => publicacion.cliente, 
+  @OneToMany(() => Publicacion, (publicacion) => publicacion.usuario, 
     { cascade: [Cascade.ALL] })
     publicaciones = new Collection<Publicacion>(this); 
 

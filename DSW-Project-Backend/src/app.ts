@@ -7,7 +7,7 @@ import { servicioRouter } from "./tipoServicio/servicio.routes.js";
 import { RequestContext } from "@mikro-orm/core";
 import { orm, syncSchema } from "./shared/db/orm.js";
 import { publicacionRouter } from "./publicacion/publicacion.routes.js";
-import { clienteRouter } from "./publicacion/cliente.routes.js";
+import { clienteRouter } from "./usuario/usuario.routes.js";
 
 const app = express();
 app.use(express.json());
