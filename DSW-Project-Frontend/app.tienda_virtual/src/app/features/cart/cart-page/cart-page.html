@@ -1,0 +1,13 @@
+<h1>Carrito</h1>
+<div *ngFor="let it of (items$ | async)" class="row">
+  <div>{{ it.product.name }}</div>
+  <div>
+    <button (click)="cart.setQty(it.product.id, Math.max(it.qty-1,1))">-</button>
+    <span>{{ it.qty }}</span>
+    <button (click)="cart.setQty(it.product.id, it.qty+1)">+</button>
+  </div>
+  <div>{{ it.product.price | currency:'USD':'symbol' }}</div>
+  <button (click)="cart.remove(it.product.id)">Quitar</button>
+</div>
+<h2>Total: {{ cart.total | currency:'USD':'symbol' }}</h2>
+<button class="btn" (click)="checkout()">Finalizar compra</button>
