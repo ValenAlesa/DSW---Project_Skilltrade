@@ -1,13 +1,19 @@
 import { Routes } from '@angular/router';
-import { MainPageComponent } from './pages/main-page/main-page.component';
+import { Login } from './pages/login/login.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component.js';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: MainPageComponent
+    path: 'inicio',
+    component: DashboardComponent
   },
   {
-    path: 'home',
-    component: MainPageComponent
+    path: 'login',
+    component: Login
+  },
+  {
+    path: '',
+    redirectTo: '/inicio',
+    pathMatch: 'full'
   }
 ];

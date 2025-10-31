@@ -14,10 +14,10 @@ export class Usuario extends BaseEntity {
   @Enum(() => RolUsuario)
   rol: RolUsuario = RolUsuario.CLIENTE;
 
-  @Property({ nullable: false, type: 'string' })
-  mail!: string;
+  @Property({ nullable: false, type: 'string', unique: true })
+  username!: string;
 
-  @Property({ nullable: false, type: 'string' })
+  @Property({ nullable: false, type: 'string', unique: true })
   password!: string;
 
   @Property({ nullable: false, type: 'string' })

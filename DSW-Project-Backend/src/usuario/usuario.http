@@ -1,0 +1,53 @@
+### GET ALL
+GET http://localhost:3000/api/usuarios
+
+### POST 
+# @name createUsuario
+POST http://localhost:3000/api/usuarios
+Content-Type: application/json
+
+{
+    "rol": "Cliente",
+    "username": "martiniano1567@gmail.com",
+    "password": "Hola2025",
+    "telefono": "1234567890",
+    "domicilio": "Calle Mitre 123",
+    "ciudad": 10
+}
+
+### ID 
+@id = {{createUsuario.response.body.data.id}}
+
+### GET ONE
+GET http://localhost:3000/api/usuarios/{{id}}
+
+### PUT
+PUT http://localhost:3000/api/usuarios/{{id}}
+Content-Type: application/json
+
+{
+    "rol": "Proveedor",
+    "username": "julioperez@gmail.com",
+    "password": "NuevoPass2025",
+    "telefono": "0987654321",
+    "domicilio": "Avenida San Martin 456",
+    "ciudad": 18
+}
+
+### POST CIUDAD TO DELETE
+# @name createUsuarioToDelete
+POST http://localhost:3000/api/usuarios
+Content-Type: application/json
+
+{
+    "rol": "Cliente",
+    "username": "pedrojuan@gmail.com",
+    "password": "PassDelete2025",
+    "telefono": "1122334455",
+    "domicilio": "Calle Falsa 123",
+    "ciudad": 19
+}
+
+### DELETE
+@idToDelete = {{createUsuarioToDelete.response.body.data.id}}
+DELETE http://localhost:3000/api/usuarios/{{idToDelete}}

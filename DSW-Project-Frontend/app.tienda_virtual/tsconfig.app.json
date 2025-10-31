@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/shared/navts"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]

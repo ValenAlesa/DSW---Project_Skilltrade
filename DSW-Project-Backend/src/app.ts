@@ -7,10 +7,14 @@ import { servicioRouter } from "./tipoServicio/servicio.routes.js";
 import { RequestContext } from "@mikro-orm/core";
 import { orm, syncSchema } from "./shared/db/orm.js";
 import { publicacionRouter } from "./publicacion/publicacion.routes.js";
-import { clienteRouter } from "./usuario/usuario.routes.js";
+import { usuarioRouter } from "./usuario/usuario.routes.js";
+import cors from "cors";
 
 const app = express();
+
 app.use(express.json());
+
+app.use(cors());
 
 //Luego de los middlewares base
 app.use((req, res, next) => {
@@ -20,13 +24,17 @@ app.use((req, res, next) => {
 //CRUD tipo de servicio
 app.use("/api/tiposServicios", tipoServicioRouter);
 
+//CRUD ciudad
 app.use("/api/ciudades", ciudadRouter);
 
+//CRUD servicio
 app.use("/api/servicios", servicioRouter);
 
+//CRUD publicacion
 app.use("/api/publicaciones", publicacionRouter);
 
-app.use("/api/clientes", clienteRouter);
+//CRUD cliente
+app.use("/api/clientes", usuarioRouter);
 
 //CRUD provincia
 app.use("/api/provincias", provinciaRouter);

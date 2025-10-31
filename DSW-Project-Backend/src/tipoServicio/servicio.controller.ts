@@ -8,7 +8,7 @@ const em = orm.em
 async function findAll(req: Request, res: Response) {
   try {
     const servicios = await em.find(Servicio, {});
-    res.status(200).json({ message: "Servicios obtenidas", data: servicios });
+    res.status(200).json({ message: "Servicios obtenidos", data: servicios });
   } catch (error: any) {
     res.status(500).json({ message: "Error al obtener servicios", error });
   }
@@ -29,7 +29,7 @@ async function add(req: Request, res: Response) {
   try {
     const servicio = await em.create( Servicio, req.body );
     await em.flush(); 
-    res.status(201).json({ message: "Servicio creada", data: servicio });
+    res.status(201).json({ message: "Servicio creado", data: servicio });
   } catch (error: any) {
     res.status(500).json({ message: "Error al crear servicio", error: error.message });
   }

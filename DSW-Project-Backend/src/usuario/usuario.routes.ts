@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { findAll, findOne, add, update, remove } from './usuario.controller.js';
 
-export const clienteRouter = Router();
+export const usuarioRouter = Router();
 
-clienteRouter.get("/", findAll);
-clienteRouter.get("/:id", findOne);
-clienteRouter.post("/", add);
-clienteRouter.put("/:id", update);
-clienteRouter.patch("/:id", update);
-clienteRouter.delete("/:id", remove);
+usuarioRouter.get("/", findAll);
+usuarioRouter.get("/:id", findOne);
+usuarioRouter.post("/", add);
+usuarioRouter.put("/:id", update);
+usuarioRouter.patch("/:id", update);
+usuarioRouter.delete("/:id", remove);

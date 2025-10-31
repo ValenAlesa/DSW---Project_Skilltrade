@@ -10,8 +10,8 @@ POST http://localhost:3000/api/tiposServicios
 Content-Type: application/json
 
 {
-  "nombre": "Plomería",
-  "descripcion": "Servicio de plomería general"
+  "nombre": "Cerrajería",
+  "descripcion": "Servicio de cerrajería general"
 }
 
 ###Modificar un tipo de servicio existente (PUT)

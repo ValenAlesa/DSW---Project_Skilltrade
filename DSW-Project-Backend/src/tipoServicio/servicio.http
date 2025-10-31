@@ -36,7 +36,6 @@ Content-Type: application/json
     "tipoServicio": 1
 }
 
-
 ### DELETE
 @idToDelete = {{createServicioToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/servicios/{{id}}
+DELETE http://localhost:3000/api/servicios/{{idToDelete}}
