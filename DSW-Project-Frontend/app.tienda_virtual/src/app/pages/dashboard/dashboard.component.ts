@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoginService } from '../../services/login.service.js';
 import { User } from '../../models/user.js';
 import { Nav } from '../../shared/nav.component.js';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,29 +13,29 @@ import { Nav } from '../../shared/nav.component.js';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  userLoginOn: boolean = false;
+  userLoginOn = false;
   userData?: User;
+
+  private subs = new Subscription();
   
   constructor(private loginService: LoginService) {}
 
-  ngOnDestroy(): void {
-    this.loginService.currentUserLoginOn.unsubscribe();
-    this.loginService.currentUserData.unsubscribe();
-  }
-  
   ngOnInit(): void {
-    this.loginService.currentUserLoginOn.subscribe(
-      {
-        next: (userLoginOn) => {
-          this.userLoginOn = userLoginOn;
-        }
-      });
+    const s1 = this.loginService.currentUserLoginOn.
+    subscribe(
+      v => this.userLoginOn = v
+    );
 
-    this.loginService.currentUserData.subscribe(
-      {
-        next: (userData) => {
-          this.userData = userData;
-        }
-      });
+    const s2 = this.loginService.currentUserData.
+    subscribe(
+      u => this.userData = u
+    );
+
+    this.subs.add(s1);
+    this.subs.add(s2);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

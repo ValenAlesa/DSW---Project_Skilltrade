@@ -10,24 +10,27 @@ export enum RolUsuario {
 
 @Entity()
 export class Usuario extends BaseEntity {
-  
-  @Enum(() => RolUsuario)
-  rol: RolUsuario = RolUsuario.CLIENTE;
 
-  @Property({ nullable: false, type: 'string', unique: true })
+  @Enum({ items: () => RolUsuario, nullable: true })
+  rol?: RolUsuario;
+
+  @Property({ nullable: false, type: 'string'})
   username!: string;
 
-  @Property({ nullable: false, type: 'string', unique: true })
+  @Property({ nullable: true, type: 'string'})
+  email?: string;
+
+  @Property({ nullable: false, type: 'string'})
   password!: string;
 
-  @Property({ nullable: false, type: 'string' })
-  telefono!: string;
+  @Property({ nullable: true, type: 'string'})
+  telefono?: string;
 
-  @Property({ nullable: false, type: 'string' })
-  domicilio!: string;
+  @Property({ nullable: true, type: 'string' })
+  domicilio?: string;
 
-  @ManyToOne({ entity: () => Ciudad, nullable: false })
-  ciudad!: Ref<Ciudad>;
+  @ManyToOne({ entity: () => Ciudad, nullable: true })
+  ciudad?: Ref<Ciudad>;
 
   @OneToMany(() => Publicacion, (publicacion) => publicacion.usuario, 
     { cascade: [Cascade.ALL] })

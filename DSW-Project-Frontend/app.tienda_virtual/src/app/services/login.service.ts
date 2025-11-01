@@ -5,44 +5,117 @@ import { environment } from '../../environments/environment.js';
 import { LoginRequest } from '../models/loginRequest.js';
 import { User } from '../models/user.js';
 
+interface AuthResponse {
+  message: string;
+  data: { user: User };
+  token: string;
+}
+
+interface RegisterBody {
+  username?: string;
+  email: string;
+  password: string;
+  telefono?: string;
+  domicilio?: string;
+  ciudad_id?: number;
+  rol?: string;
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class LoginService {
+  private apiBase = `${environment.apiUrl}/usuarios`;
+  
+  private INIT_USER: User = {
+    id:0, 
+    username:'',
+    rol:'',
+    email:'', 
+    telefono:'', 
+    domicilio:'',
+    ciudad_id:0
+  } as User;
 
-  currentUserLoginOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  currentUserData: BehaviorSubject<User> = new BehaviorSubject<User>({id:0, rol:'',email:'', telefono:'', domicilio:''});
+  private _currentUserLoginOn$ = new BehaviorSubject<boolean>(false);
+  private _currentUserData$ = new BehaviorSubject<User>(this.INIT_USER);
+
+  currentUserLoginOn = this._currentUserLoginOn$.asObservable();
+  currentUserData = this._currentUserData$.asObservable();
 
   constructor (private http: HttpClient){}
 
-  login(credentials:LoginRequest): Observable<any> {
-    return this.http.get<User>(`././assets/data.json`).pipe(
-      tap((userData: User) => {
-        this.currentUserLoginOn.next(true);
-        this.currentUserData.next(userData);
+  register(body: RegisterBody): Observable<any> {
+    return this.http.post<any>(`${this.apiBase}/register`, body).pipe(
+      catchError(err => throwError(() => err))
+    );
+  }
+
+  private ensureSubjectsOpen() {
+    if (this._currentUserLoginOn$.closed) {
+      this._currentUserLoginOn$ = new BehaviorSubject<boolean>(false);
+    }
+    if (this._currentUserData$.closed) {
+      this._currentUserData$ = new BehaviorSubject<User>(this.INIT_USER);
+    }
+  }
+
+  login(credentials: LoginRequest): Observable<AuthResponse> {
+    
+    const url = `${this.apiBase}/login`;
+
+    return this.http.post<AuthResponse>(url, credentials).pipe(
+      tap(response => {
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+        this.ensureSubjectsOpen();
+        this._currentUserLoginOn$.next(true);
+        this._currentUserData$.next(response.data.user);
       }),
       catchError(this.handleError)
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-    return throwError(() => new Error('Something bad happened; please try again later.'));
-  }  
+  logout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('currentUser');
+    this._currentUserLoginOn$.next(false);
+    this._currentUserData$.next({
+      id:0, 
+      username:'', 
+      rol:'', 
+      email:'', 
+      telefono:'', 
+      domicilio:'', 
+      ciudad_id:0
+    } as User);
+  }
+
+  private handleError(error: any) {
+  
+if (error?.status !== undefined) {
+  if (error.status === 0) {
+    console.error('Network/client error:', error);
+  } else {
+    console.error(`Backend returned code ${error.status}, body was:`, error.error);
+  }
+
+  return throwError(() => error);
+}
+
+console.error('An unexpected error occurred:', error);
+return throwError(() => error);
+  }
+
 
   get userData(): Observable<User> {
-    return this.currentUserData.asObservable();
+    return this._currentUserData$.asObservable();
   }
 
   get userLoginOn(): Observable<boolean> {
-    return this.currentUserLoginOn.asObservable();
+    return this._currentUserLoginOn$.asObservable();
   }
 }
 

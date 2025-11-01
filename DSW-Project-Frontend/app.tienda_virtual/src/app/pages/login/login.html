@@ -1,32 +1,29 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <p class="text-danger">{{loginError}}</p>
-  <div class="mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email</label>
-    <input formControlName="email" class="form-control" id="exampleInputEmail1">
-    
-    <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger">
-      <div *ngIf="email.errors?.['required']">
-        El Email es requerido.
+<div class="login-container">
+  <div class="login-card">
+    <h2>Iniciar sesión</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" placeholder="Ingrese su correo" />
       </div>
-      <div *ngIf="email.errors?.['email']">
-        El Email debe tener un formato válido.
-      </div>
-    </div>
-  </div>
 
-  <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input formControlName="password" type="password" class="form-control" id="exampleInputPassword1">
-    
-    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-danger">
-      <div *ngIf="password.errors?.['required']">
-        La contraseña es requerida.
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input id="password" type="password" formControlName="password" placeholder="Ingrese su contraseña" />
       </div>
-      <div *ngIf="password.errors?.['minlength']">
-        La contraseña debe tener al menos 6 caracteres.
+
+      <button type="submit" [disabled]="!loginForm.valid">Ingresar</button>
+
+      <p class="error" *ngIf="loginError">{{ loginError }}</p>
+    </form>
+
+      <!-- Link to registration page -->
+      <div class="text-center mt-3">
+        <p>
+          ¿No tenés cuenta?
+          <a [routerLink]="['/register']" class="register-link">Registrate</a>
+        </p>
       </div>
-    </div>
+
   </div>
-  
-  <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-</form>
+</div>

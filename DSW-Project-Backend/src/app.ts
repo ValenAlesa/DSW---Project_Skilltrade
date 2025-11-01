@@ -1,49 +1,59 @@
 import "reflect-metadata";
 import express from "express";
+import cors from "cors";
+
+/* Routers */
 import { provinciaRouter } from "./provincia/provincia.routes.js";
 import { ciudadRouter } from "./provincia/ciudad.routes.js";
 import { tipoServicioRouter } from "./tipoServicio/tipoServicio.routes.js";
 import { servicioRouter } from "./tipoServicio/servicio.routes.js";
-import { RequestContext } from "@mikro-orm/core";
-import { orm, syncSchema } from "./shared/db/orm.js";
 import { publicacionRouter } from "./publicacion/publicacion.routes.js";
 import { usuarioRouter } from "./usuario/usuario.routes.js";
-import cors from "cors";
+import authRouter from "./auth/auth.routes.js";
 
+/* MikroORM */
+import { RequestContext } from "@mikro-orm/core";
+import { orm, syncSchema } from "./shared/db/orm.js";
+
+/* Create Express app */
 const app = express();
 
-app.use(express.json());
-
+/* CORS Middleware */
 app.use(cors());
 
-//Luego de los middlewares base
+/* Body parser middleware */
+app.use(express.json());
+
+/* MikroORM Request Context Middleware */
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
 
-//CRUD tipo de servicio
+/* RUTAS PÚBLICAS (sin JWT) */
+app.use("/api/auth", authRouter);
+
+/* RUTAS CRUD */
 app.use("/api/tiposServicios", tipoServicioRouter);
-
-//CRUD ciudad
 app.use("/api/ciudades", ciudadRouter);
-
-//CRUD servicio
 app.use("/api/servicios", servicioRouter);
-
-//CRUD publicacion
 app.use("/api/publicaciones", publicacionRouter);
-
-//CRUD cliente
-app.use("/api/clientes", usuarioRouter);
-
-//CRUD provincia
+app.use("/api/usuarios", usuarioRouter);
 app.use("/api/provincias", provinciaRouter);
 
+/* 404 Handler */
 app.use((_, res) => {
   return res.status(404).send({ message: "Recurso no encontrado" });
 });
 
-await syncSchema()
+/* Error Handler */
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error("Unhandled error:", err);
+  const status = err?.status || 500;
+  res.status(status).json({ message: err?.message || "Error interno del servidor" });
+});
+
+/* Start the server */
+await syncSchema();
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

@@ -1,17 +1,23 @@
 import { Component, signal } from '@angular/core';
 import { HeaderComponent } from './components/header/header.component'; // Adjust the path as needed
 import { FooterComponent } from './components/footer/footer.component'; // If you use <app-footer>
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter } from 'rxjs/internal/operators/filter';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, FooterComponent, RouterModule],
+  imports: [HeaderComponent, FooterComponent, RouterModule, CommonModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
 
 export class AppComponent {
-  protected readonly title = signal('app.tienda_virtual');
-}
+  constructor(private router: Router) {}
 
+  shouldShowLayout(): boolean {
+    const hiddenRoutes = ['/login', '/register'];
+    return !hiddenRoutes.includes(this.router.url);
+  }
+}

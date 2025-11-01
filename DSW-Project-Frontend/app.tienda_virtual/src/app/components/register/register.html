@@ -1,0 +1,41 @@
+<div class="auth-wrap">
+  <div class="card">
+    <h2>Crear cuenta</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>Email</label>
+      <input type="email" formControlName="email" placeholder="tu@email.com" />
+      <small class="err" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+        Ingresá un email válido
+      </small>
+
+      <div formGroupName="passwordGroup"
+        [class.invalid]="form.get('passwordGroup')?.hasError('mismatch') && form.get('passwordGroup')?.touched">
+      
+        <label>Contraseña</label>
+        <input type="password" formControlName="password">
+      
+        <label>Repetir contraseña</label>
+        <input type="password" formControlName="confirmPassword">
+      
+        <small class="err" *ngIf="form.get('passwordGroup')?.hasError('mismatch') && form.get('passwordGroup')?.touched">
+          Las contraseñas no coinciden
+        </small>
+      </div>
+
+      <label>Usuario (opcional)</label>
+      <input type="text" formControlName="username" placeholder="usuario" />
+
+      <label>Teléfono (opcional)</label>
+      <input type="text" formControlName="telefono" />
+
+      <label>Domicilio (opcional)</label>
+      <input type="text" formControlName="domicilio" />
+
+      <button type="submit" [disabled]="form.invalid">Registrarme</button>
+
+      <p class="err" *ngIf="errorMsg">{{ errorMsg }}</p>
+    </form>
+  </div>
+</div>
+

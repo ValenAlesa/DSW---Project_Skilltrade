@@ -7,12 +7,13 @@ POST http://localhost:3000/api/usuarios
 Content-Type: application/json
 
 {
-    "rol": "Cliente",
     "username": "martiniano1567@gmail.com",
+    "email": "martiniano1567@gmail.com",
     "password": "Hola2025",
+    "rol": "CLIENTE",
     "telefono": "1234567890",
     "domicilio": "Calle Mitre 123",
-    "ciudad": 10
+    "ciudad_id": 1
 }
 
 ### ID 
