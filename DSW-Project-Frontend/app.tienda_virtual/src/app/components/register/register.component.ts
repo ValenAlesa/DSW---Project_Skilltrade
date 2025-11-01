@@ -44,20 +44,15 @@ export class RegisterComponent {
       return;
     }
 
+    localStorage.removeItem('token');
     const { email, username, telefono, domicilio } = this.form.value;
     const password = this.form.value.passwordGroup?.password!;
 
     this.auth.register({ username: username || email, email, password, telefono, domicilio }).subscribe({
-      next: () => this.auth.login({ email, password }).subscribe({
         next: () => {
-          console.log('Registro e inicio de sesión exitosos');
-          this.router.navigate(['/main-page']);
-        },
-        error: (err) => {
-          console.error('Error al iniciar sesión automáticamente:', err);
+          localStorage.removeItem('token');
           this.router.navigate(['/login']);
-        }
-      }),
+        },
       error: (err) => {
         console.error('Error al registrar usuario:', err);
         this.errorMsg = err.error?.message || 'No se pudo registrar el usuario';

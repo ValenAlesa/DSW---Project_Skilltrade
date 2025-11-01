@@ -47,11 +47,12 @@ export class LoginService {
 
   constructor (private http: HttpClient){}
 
-  register(body: RegisterBody): Observable<any> {
-    return this.http.post<any>(`${this.apiBase}/register`, body).pipe(
-      catchError(err => throwError(() => err))
+  register(data: any) {
+  return this.http.post(`${this.apiBase}/register`, data)
+    .pipe(
+      tap(() => localStorage.removeItem('token'))
     );
-  }
+}
 
   private ensureSubjectsOpen() {
     if (this._currentUserLoginOn$.closed) {
