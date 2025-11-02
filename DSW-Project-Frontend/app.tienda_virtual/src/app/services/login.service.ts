@@ -48,7 +48,7 @@ export class LoginService {
   constructor (private http: HttpClient){}
 
   register(data: any) {
-  return this.http.post(`${this.apiBase}/register`, data)
+  return this.http.post<RegisterBody>(`${this.apiBase}/register`, data)
     .pipe(
       tap(() => localStorage.removeItem('token'))
     );

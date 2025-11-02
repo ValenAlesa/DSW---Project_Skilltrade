@@ -7,10 +7,13 @@ POST http://localhost:3000/api/publicaciones
 Content-Type: application/json
 
 {
-    "descripcion": "Se realizan todo tipo de reparaciones",
+    "descripcion": "Servicios de reparacion y mantenimiento en el hogar",
     "estado": "Aprobada",
-    "cliente": 1,
-    "servicio": 100  
+    "fechaPublicacion": "2024-08-30",
+    "titulo": "Servicios de Reparacion y Mantenimiento",
+    "precio": 30.000,
+    "usuario_id": 1,
+    "servicio_id": 100
 }
 
 ### ID 
@@ -24,10 +27,13 @@ PUT http://localhost:3000/api/publicaciones/{{id}}
 Content-Type: application/json
 
 {
-    "descripcion": "Se realizan todo tipo de reparaciones y mantenimiento",
-    "estado": "Rechazada",
-    "cliente": 1,
-    "servicio": 101
+    "descripcion": "Plomeria, electricidad y mantenimiento en general",
+    "estado": "Aprobada",
+    "fechaPublicacion": "2024-06-16",
+    "titulo": "Servicios de Mantenimiento",
+    "precio": 32.500,
+    "usuario_id": 1,
+    "servicio_id": 101    
 }
 
 ### POST CIUDAD TO DELETE
@@ -38,8 +44,11 @@ Content-Type: application/json
 {
     "descripcion": "Se realiza todo tipo de limpieza",
     "estado": "Pendiente",
-    "cliente": 1,
-    "servicio": 103
+    "fechaPublicacion": "2024-06-18",
+    "titulo": "Servicios de Limpieza",
+    "precio": 10.000,
+    "usuario_id": 1,
+    "servicio_id": 103
 }
 
 

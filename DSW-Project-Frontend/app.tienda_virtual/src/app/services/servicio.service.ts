@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment.js';
   providedIn: 'root'
 })
 
-export class Servicio {
+export class ServicioService {
 
   private apiUrl = `${environment.apiUrl}/servicios`;
 

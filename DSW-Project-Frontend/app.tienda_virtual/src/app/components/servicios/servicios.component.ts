@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Servicio } from '../../services/servicio.service.js';
+import { ServicioService } from '../../services/servicio.service.js';
 import { CommonModule } from '@angular/common';
 import { ServicioModel } from '../../models/servicio.model.js';
 
@@ -7,17 +7,17 @@ import { ServicioModel } from '../../models/servicio.model.js';
   selector: 'app-servicios',
   imports: [CommonModule],
   templateUrl: './servicios.html',
-  styleUrl: './servicios.css',
+  styleUrls: ['./servicios.css'],
 })
-export class Servicios implements OnInit {
+export class ServiciosComponent implements OnInit {
 
-  datos: ServicioModel[] = [];
+  servicios: ServicioModel[] = [];
 
-  constructor(private servicio: Servicio) {}
+  constructor(private servicio: ServicioService) {}
 
   ngOnInit(): void {
     this.servicio.ConsultarServicios().subscribe((response) => {
-      this.datos = response.data;
+      this.servicios = response.data;
     });
   }
 }

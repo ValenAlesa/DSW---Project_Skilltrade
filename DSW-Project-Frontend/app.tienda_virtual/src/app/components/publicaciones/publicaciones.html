@@ -1,1 +1,18 @@
-<p>publicaciones works!</p>
+<h1>Listado de Publicaciones</h1>
+
+<form [formGroup]="filtro" (ngSubmit)="filtrarPublicaciones()">
+  <label>Desde: <input type="date" formControlName="from" /></label>
+  <label>Hasta: <input type="date" formControlName="to" /></label>
+  <button type="submit">Filtrar</button>
+  <button type="button" (click)="limpiar()">Limpiar</button>
+</form>
+
+<p *ngIf="loading">Cargando publicaciones...</p>
+<p *ngIf="!loading && publicaciones.length === 0">Sin resultados.</p>
+
+<ul *ngIf="!loading && publicaciones.length > 0">
+  <li *ngFor="let p of publicaciones">
+    <strong>{{ p.titulo }}</strong> — {{ p.descripcion }} —
+    {{ p.fecha_publicacion | date:'yyyy-MM-dd' }} — ${{ p.precio }}
+  </li>
+</ul>

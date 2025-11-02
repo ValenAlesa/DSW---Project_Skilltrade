@@ -4,11 +4,12 @@ import { LoginService } from '../../services/login.service.js';
 import { User } from '../../models/user.js';
 import { Nav } from '../../shared/nav.component.js';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { PublicacionesComponent } from '../../components/publicaciones/publicaciones.component.js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, Nav],
+  imports: [CommonModule, Nav, PublicacionesComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
