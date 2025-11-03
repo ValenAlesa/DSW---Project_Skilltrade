@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, ValidationErrors, AbstractControl, Validators, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { LoginService } from '../../services/login.service.js';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 export const passwordsMatch: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
   const p1 = group.get('password')?.value ?? '';
@@ -15,7 +15,7 @@ export const passwordsMatch: ValidatorFn = (group: AbstractControl): ValidationE
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
 })

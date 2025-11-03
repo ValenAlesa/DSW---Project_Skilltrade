@@ -18,6 +18,7 @@ import { LoginService } from '../../services/login.service.js';
 export class PublicacionesComponent implements OnInit {
 
   publicaciones: Publicacion[] = [];
+  publicacionesFiltradas: Publicacion[] = [];
   pubSeleccionada?: Publicacion;
   
   /* Formulario de reserva */
@@ -30,19 +31,25 @@ export class PublicacionesComponent implements OnInit {
   /* Filtro por fecha */
   filtro!: FormGroup;
 
+  /* Búsqueda por texto */
+  searchText = '';
+
   /*Min fecha*/
   minFecha = new Date().toISOString().slice(0,10);
 
   /* Usuario logueado */
   user?: User | null;
 
-  /* Mapeo de servicios */
-  private servicioMap: Record<number, { nombre: string }> = {
-    1: { nombre: 'Limpieza' },
-    2: { nombre: 'Plomería' },
-    3: { nombre: 'Electricidad' },
-    4: { nombre: 'Jardinería' },
-    5: { nombre: 'Pintura' },
+  /* Mapeo de servicios con emojis */
+  private servicioMap: Record<number, { nombre: string; emoji: string }> = {
+    1: { nombre: 'Limpieza', emoji: '🧹' },
+    2: { nombre: 'Plomería', emoji: '🔧' },
+    3: { nombre: 'Electricidad', emoji: '⚡' },
+    4: { nombre: 'Jardinería', emoji: '🌱' },
+    5: { nombre: 'Pintura', emoji: '🎨' },
+    6: { nombre: 'Carpintería', emoji: '🔨' },
+    7: { nombre: 'Albañilería', emoji: '🧱' },
+    8: { nombre: 'Tecnología', emoji: '💻' },
   };
 
 
@@ -92,12 +99,15 @@ export class PublicacionesComponent implements OnInit {
     const t = this.norm(to);
 
     this.publicacion.getPublicaciones(f, t).subscribe({
-      next: (data: Publicacion[]) => 
-      (this.publicaciones = data ?? []),
+      next: (data: Publicacion[]) => {
+        this.publicaciones = data ?? [];
+        this.aplicarBusquedaTexto();
+      },
       error: (err) => {
         console.error(err);
         this.errorMsg = 'Error al cargar las publicaciones.';
         this.publicaciones = [];
+        this.publicacionesFiltradas = [];
       },
       complete: () => (this.loading = false),
     });
@@ -112,12 +122,42 @@ export class PublicacionesComponent implements OnInit {
 
   limpiar(): void {
     this.filtro.reset();
+    this.searchText = '';
     this.buscarPublicaciones();
+  }
+
+  /*---- Búsqueda por texto ----*/
+  onSearchChange(text: string): void {
+    this.searchText = text;
+    this.aplicarBusquedaTexto();
+  }
+
+  private aplicarBusquedaTexto(): void {
+    if (!this.searchText.trim()) {
+      this.publicacionesFiltradas = [...this.publicaciones];
+      return;
+    }
+
+    const search = this.searchText.toLowerCase().trim();
+    this.publicacionesFiltradas = this.publicaciones.filter(pub => {
+      const titulo = pub.titulo?.toLowerCase() || '';
+      const descripcion = pub.descripcion?.toLowerCase() || '';
+      const nombreServicio = this.getNombreServicio(pub.servicio_id).toLowerCase();
+      
+      return titulo.includes(search) || 
+             descripcion.includes(search) || 
+             nombreServicio.includes(search);
+    });
   }
 
   /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
     return this.servicioMap[servicio_id]?.nombre ?? 'Servicio';
+  }
+
+  /*---- Obtener emoji del servicio ----*/
+  getEmojiServicio(servicio_id: number): string {
+    return this.servicioMap[servicio_id]?.emoji ?? '🛠️';
   }
 
 
