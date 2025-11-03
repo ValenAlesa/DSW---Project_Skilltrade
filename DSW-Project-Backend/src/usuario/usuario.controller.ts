@@ -135,7 +135,7 @@ async function remove(req: Request, res: Response) {
 async function register(req: Request, res: Response) {
   try {
     const em = orm.em.fork();
-    const {username, email, password, telefono, domicilio, rol} = req.body || {};
+    const {username, email, password, telefono, domicilio, rol, ciudad} = req.body || {};
 
     if (!email && !username) {
       return res.status(400).json({ message: "Se requiere username o email" });
@@ -160,6 +160,7 @@ async function register(req: Request, res: Response) {
       telefono,
       domicilio,
       rol, 
+      ciudad
     });
 
     await em.flush();

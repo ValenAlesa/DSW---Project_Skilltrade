@@ -1,0 +1,34 @@
+### GET ALL 
+GET http://localhost:3000/api/reservas
+
+### POST 
+# @name createReserva
+POST http://localhost:3000/api/reservas
+Content-Type: application/json
+
+{
+  "fecha_reserva": "2025-11-04",
+  "precio": 30.000,
+  "publicacionId": 1,
+  "clienteId": 9,
+  "estado": "pendiente"  
+}
+
+### ID
+@id = {{createReserva.response.body.data.id}}
+
+### GET ONE
+GET http://localhost:3000/api/reservas/{{id}}
+
+### PATCH
+PATCH http://localhost:3000/api/reservas/{{id}}
+Content-Type: application/json
+
+{
+  "estado": "confirmada",
+  "precio": 35.000,
+  "fecha_reserva": "2025-11-10"
+}
+
+### DELETE
+DELETE http://localhost:3000/api/reservas/{{id}}

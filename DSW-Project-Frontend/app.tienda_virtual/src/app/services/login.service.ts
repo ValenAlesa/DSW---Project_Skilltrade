@@ -45,7 +45,15 @@ export class LoginService {
   currentUserLoginOn = this._currentUserLoginOn$.asObservable();
   currentUserData = this._currentUserData$.asObservable();
 
-  constructor (private http: HttpClient){}
+  constructor (private http: HttpClient){
+    const saved = localStorage.getItem('currentUser');
+    if (saved) {
+      try {
+      this._currentUserData$.next(JSON.parse(saved));
+      this._currentUserLoginOn$.next(true);
+    } catch {}
+  }
+}
 
   register(data: any) {
   return this.http.post<RegisterBody>(`${this.apiBase}/register`, data)

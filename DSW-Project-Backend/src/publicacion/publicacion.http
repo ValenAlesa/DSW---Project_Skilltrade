@@ -36,22 +36,5 @@ Content-Type: application/json
     "servicio_id": 101    
 }
 
-### POST CIUDAD TO DELETE
-# @name createPublicacionToDelete
-POST http://localhost:3000/api/publicaciones
-Content-Type: application/json
-
-{
-    "descripcion": "Se realiza todo tipo de limpieza",
-    "estado": "Pendiente",
-    "fechaPublicacion": "2024-06-18",
-    "titulo": "Servicios de Limpieza",
-    "precio": 10.000,
-    "usuario_id": 1,
-    "servicio_id": 103
-}
-
-
 ### DELETE
-@idToDelete = {{createPublicacionToDelete.response.body.data.id}}
 DELETE http://localhost:3000/api/publicaciones/{{id}}

@@ -1,9 +1,18 @@
-<header class="navbar">
-  <div class="navbar-container">
-    <!-- Logo y nombre de la aplicación -->
-    <div class="logo-section">
-      <!-- 📌 REEMPLAZA LA RUTA AQUÍ: /assets/images/tu-logo.png -->
-      <img src="/assets/images/logo_chico.png" alt="SkillTrade Logo" class="logo-img"/>
-      <h1 class="app-name">SkillTrade</h1>
-    </div>
+<header class="topbar">
+  <div class="left">
+    <a class="brand" [routerLink]="['/']">SkillTrade</a>
+  </div>
+
+  <nav class="right" *ngIf="!(auth.currentUserLoginOn | async); else logged">
+    <a class="btn outline" [routerLink]="['/login']">Iniciar sesión</a>
+    <a class="btn solid" [routerLink]="['/register']">Registrate</a>
+  </nav>
+
+  <ng-template #logged>
+    <nav class="right">
+      <a class="btn outline" [routerLink]="['/main-page']">Ir al dashboard</a>
+      <button class="btn solid" (click)="logout()">Salir</button>
+    </nav>
+  </ng-template>
+</header>
 

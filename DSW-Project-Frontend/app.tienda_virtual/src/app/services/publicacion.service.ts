@@ -13,33 +13,23 @@ export class PublicacionService {
 
   constructor(private http: HttpClient) { }
 
-  getPublicaciones(filters: { from?: string, to?: string }): Observable<Publicacion[]> {
+  getPublicaciones( from?: string | null, to?: string | null ): Observable<Publicacion[]> {
     let params = new HttpParams();
 
-    if (filters?.from) {
-      params = params.set('from', filters.from);
+    if (from) {
+      params = params.set('from', from);
     }
 
-    if (filters?.to) {
-      params = params.set('to', filters.to);
+    if (to) {
+      params = params.set('to', to);
     }
 
-    const url = `${this.apiUrl}`;
-    console.log('[PublicacionService] GET', url, 'with params', params.toString());
-
-    return this.http.get(url, { params, observe: 'response' }).pipe(
-      tap((httpResp) => {
-        console.log('[PublicacionService] Response Status:', httpResp.status);
-        console.log('[PublicacionService] Response Body:', httpResp.body);
-      }),
-      map((httpResp) => {
-        const body = httpResp.body;
-        const data = Array.isArray(body) ? body : (body as any)?.data;
-        if (!Array.isArray(data)) {
-          throw new Error('Respuesta no es array ni tiene propiedad data');
-        }
-        return data as Publicacion[];
-      })
+    return this.http.get
+    <{ message: string; data: Publicacion[] } | Publicacion[]>(this.apiUrl, { params })
+    .pipe(
+      map((resp) => (
+        Array.isArray(resp) ? resp : resp.data ?? []
+      ))
     );
   }
 

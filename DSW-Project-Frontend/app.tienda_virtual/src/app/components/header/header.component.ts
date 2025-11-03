@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { LoginService } from '../../services/login.service.js';
 
 @Component({
   selector: 'app-header',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent{
 
-  constructor() { }
+  auth = inject(LoginService)
+  router = inject(Router)
 
-  ngOnInit(): void {
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
-
 }

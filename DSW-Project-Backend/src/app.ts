@@ -14,6 +14,7 @@ import authRouter from "./auth/auth.routes.js";
 /* MikroORM */
 import { RequestContext } from "@mikro-orm/core";
 import { orm, syncSchema } from "./shared/db/orm.js";
+import { reservaRouter } from "./reserva/reserva.routes.js";
 
 /* Create Express app */
 const app = express();
@@ -39,6 +40,7 @@ app.use("/api/servicios", servicioRouter);
 app.use("/api/publicaciones", publicacionRouter);
 app.use("/api/usuarios", usuarioRouter);
 app.use("/api/provincias", provinciaRouter);
+app.use("/api/reservas", reservaRouter);
 
 /* 404 Handler */
 app.use((_, res) => {

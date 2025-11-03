@@ -1,27 +1,29 @@
-###Obtener todos los tipos de servicios
+### GET ALL
 GET http://localhost:3000/api/tiposServicios
 
-###Obtener un tipo de servicio específico
-GET http://localhost:3000/api/tiposServicios/7f726685-65e7-4118-832a-1f4701b1ef5c
-
-
-###Crear un nuevo tipo de servicio
+### POST 
+# @name createTipoServicio
 POST http://localhost:3000/api/tiposServicios
 Content-Type: application/json
 
 {
-  "nombre": "Cerrajería",
-  "descripcion": "Servicio de cerrajería general"
+    "descripcion": "Limpieza general"
 }
 
-###Modificar un tipo de servicio existente (PUT)
-PUT http://localhost:3000/api/tiposServicios/7f726685-65e7-4118-832a-1f4701b1ef5c
+### ID 
+@id = {{createTipoServicio.response.body.data.id}}
+
+### GET ONE
+GET http://localhost:3000/api/tiposServicios/{{id}}
+
+### PUT
+PUT http://localhost:3000/api/tiposServicios/{{id}}
 Content-Type: application/json
 
 {
-  "nombre": "Plomería Avanzada",
-  "descripcion": "Servicio de plomería avanzado"
+    "descripcion": "Jardineria"
 }
 
-###Eliminar un tipo de servicio
-DELETE http://localhost:3000/api/tiposServicios/62dc1925-a76b-4a87-952e-ea9ae5457961
+
+### DELETE
+DELETE http://localhost:3000/api/tiposServicios/{{id}}

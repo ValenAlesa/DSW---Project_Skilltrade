@@ -26,16 +26,6 @@ Content-Type: application/json
     "tipoServicio": 1
 }
 
-### POST CIUDAD TO DELETE
-# @name createServicioToDelete
-POST http://localhost:3000/api/servicios
-Content-Type: application/json
-
-{
-    "descripcion": "Servicio de pintura",
-    "tipoServicio": 1
-}
 
 ### DELETE
-@idToDelete = {{createServicioToDelete.response.body.data.id}}
-DELETE http://localhost:3000/api/servicios/{{idToDelete}}
+DELETE http://localhost:3000/api/servicios/{{id}}

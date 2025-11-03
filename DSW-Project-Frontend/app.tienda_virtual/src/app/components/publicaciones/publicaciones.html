@@ -1,18 +1,60 @@
 <h1>Listado de Publicaciones</h1>
 
-<form [formGroup]="filtro" (ngSubmit)="filtrarPublicaciones()">
-  <label>Desde: <input type="date" formControlName="from" /></label>
-  <label>Hasta: <input type="date" formControlName="to" /></label>
+<form class="filter" [formGroup]="filtro" (ngSubmit)="filtrarPublicaciones()">
+  <label>Desde:
+    <input type="date" formControlName="from">
+  </label>
+
+  <label>Hasta:
+    <input type="date" formControlName="to">
+  </label>
+
   <button type="submit">Filtrar</button>
   <button type="button" (click)="limpiar()">Limpiar</button>
 </form>
 
-<p *ngIf="loading">Cargando publicaciones...</p>
-<p *ngIf="!loading && publicaciones.length === 0">Sin resultados.</p>
+<p *ngIf="loading">Cargando publicaciones…</p>
+<p *ngIf="!loading && !publicaciones.length">No hay publicaciones.</p>
+<p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
 
-<ul *ngIf="!loading && publicaciones.length > 0">
-  <li *ngFor="let p of publicaciones">
-    <strong>{{ p.titulo }}</strong> — {{ p.descripcion }} —
-    {{ p.fecha_publicacion | date:'yyyy-MM-dd' }} — ${{ p.precio }}
-  </li>
-</ul>
+<div class="grid">
+  <article class="card" *ngFor="let p of publicaciones">
+    <img [src]="getNombreServicio(p.servicio_id)" alt="imagen servicio" />
+    <div class="card-body">
+      <h3>{{ p.titulo }}</h3>
+      <p class="desc">{{ p.descripcion }}</p>
+      <div class="meta">
+        <span class="price">${{ p.precio }}</span>
+        <span class="date">{{ p.fecha_publicacion | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <button (click)="abrirReserva(p)">Reservar</button>
+      <small *ngIf="!user" class="hint">Iniciá sesión para reservar</small>
+    </div>
+  </article>
+</div>
+
+<!-- Modal de reserva -->
+<div class="modal-backdrop" *ngIf="showReserva">
+  <div class="modal">
+    <h2>Reservar servicio</h2>
+    <p *ngIf="pubSeleccionada"><strong>{{ pubSeleccionada.titulo }}</strong> — ${{ pubSeleccionada.precio }}</p>
+
+    <form [formGroup]="reservaForm">
+      <label>Fecha de reserva
+        <input type="date" formControlName="fecha_reserva" [min]="minFecha">
+      </label>
+
+      <label>Notas (opcional)
+        <textarea formControlName="notas" rows="3"
+          placeholder="Indica horario preferido, aclaraciones, etc."></textarea>
+      </label>
+    </form>
+
+    <div class="actions">
+      <button (click)="cerrarReserva()" type="button">Cancelar</button>
+      <button (click)="confirmarReserva()" [disabled]="loading" type="button">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

@@ -26,17 +26,6 @@ Content-Type: application/json
     "provincia": 1 
 }
 
-### POST CIUDAD TO DELETE
-# @name createCiudadToDelete
-POST http://localhost:3000/api/ciudades
-Content-Type: application/json
-
-{
-    "nombre": "San Lorenzo",
-    "provincia": 1
-}
-
 
 ### DELETE
-@idToDelete = {{createCiudadToDelete.response.body.data.id}}
 DELETE http://localhost:3000/api/ciudades/{{id}}

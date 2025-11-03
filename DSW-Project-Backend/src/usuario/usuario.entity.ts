@@ -2,6 +2,7 @@ import { Entity, Property, ManyToOne, OneToMany, Ref, Collection, Cascade, Enum 
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Publicacion } from '../publicacion/publicacion.entity.js';
 import { Ciudad } from '../provincia/ciudad.entity.js';
+import { Reserva } from '../reserva/reserva.entity.js';
 
 export enum RolUsuario {
   CLIENTE = 'CLIENTE',
@@ -30,10 +31,13 @@ export class Usuario extends BaseEntity {
   domicilio?: string;
 
   @ManyToOne({ entity: () => Ciudad, nullable: true })
-  ciudad?: Ref<Ciudad>;
+  ciudad!: Ref<Ciudad>;
 
   @OneToMany(() => Publicacion, (publicacion) => publicacion.usuario, 
-    { cascade: [Cascade.ALL] })
-    publicaciones = new Collection<Publicacion>(this); 
+  { cascade: [Cascade.ALL] })
+  publicaciones = new Collection<Publicacion>(this); 
+
+  @OneToMany(() => Reserva, (reserva) => reserva.cliente)
+  reservas = new Collection<Reserva>(this);
 
 }

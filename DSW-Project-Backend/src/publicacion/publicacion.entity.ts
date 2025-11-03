@@ -1,7 +1,8 @@
-import { Entity, Property, ManyToOne, Ref } from '@mikro-orm/core';
+import { Entity, Property, ManyToOne, Ref, OneToMany, Collection } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
 import { Servicio } from '../tipoServicio/servicio.entity.js';
+import { Reserva } from '../reserva/reserva.entity.js';
 
 @Entity()
 export class Publicacion extends BaseEntity {
@@ -13,7 +14,10 @@ export class Publicacion extends BaseEntity {
   estado!: string;
 
   @Property({ nullable: false, type: 'date' })
-  fechaPublicacion!: Date;
+  fecha_publicacion!: Date;
+
+  @Property({ nullable: false, type: 'string' })
+  imagen!: string;
   
   @Property({ nullable: false, type: 'string' })
   titulo!: string;
@@ -22,9 +26,12 @@ export class Publicacion extends BaseEntity {
   precio!: number;
 
   @ManyToOne({ entity: () => Usuario, nullable: true })
-  usuario?: Ref<Usuario>;
+  usuario!: Ref<Usuario>;
 
   @ManyToOne({ entity: () => Servicio, nullable: true })
-  servicio?: Ref<Servicio>;
+  servicio!: Ref<Servicio>;
+
+  @OneToMany(() => Reserva, (reserva) => reserva.publicacion)
+  reservas = new Collection<Reserva>(this);
 
 }

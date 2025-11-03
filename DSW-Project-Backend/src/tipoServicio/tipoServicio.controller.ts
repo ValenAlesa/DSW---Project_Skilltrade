@@ -2,26 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { TipoServicio } from "./tipoServicio.entity.js";
 import { orm } from "../shared/db/orm.js";
 
-const em = orm.em;
+const em = orm.em
 
-function sanitizeTipoServicioInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  req.body.sanitizedInput = {
-    nombre: req.body.nombre,
-    descripcion: req.body.descripcion,
-  };
-
-  Object.keys(req.body.sanitizedInput).forEach((key) => {
-    if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key];
-    }
-  });
-
-  next();
-}
 
 async function findAll(req: Request, res: Response) {
   try {
@@ -45,7 +27,7 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const tipoServicio = em.create(TipoServicio, req.body.sanitizedInput);
+    const tipoServicio = em.create(TipoServicio, req.body);
     await em.flush();
     res.status(201).json({ message: "Tipo de Servicio creado", data: tipoServicio });
   } catch (error) {
@@ -76,4 +58,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizeTipoServicioInput, findAll, findOne, add, update, remove };
+export { findAll, findOne, add, update, remove };
