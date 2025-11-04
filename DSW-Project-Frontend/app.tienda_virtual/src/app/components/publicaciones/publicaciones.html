@@ -1,8 +1,3 @@
-<!-- Botón -->
-<button class="btn-nueva" type="button" (click)="crearVisible = true">
-  + Nueva publicación
-</button>
-
 <!-- Backdrop -->
 <div class="st-backdrop" *ngIf="crearVisible" (click)="cancelarCrear()"></div>
 
@@ -70,6 +65,13 @@
       Explora Servicios Disponibles
     </h1>
     <p class="subtitle">Encuentra el servicio perfecto para ti</p>
+  </div>
+
+  <!-- Botón -->
+  <div class="actions-row">
+    <button type="button" class="btn-nueva" (click)="crearVisible = true">
+      + Nueva publicación
+    </button>
   </div>
 
   <!-- Barra de búsqueda principal -->
