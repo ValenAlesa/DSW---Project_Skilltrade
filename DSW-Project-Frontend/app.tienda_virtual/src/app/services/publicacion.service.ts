@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.js';
 import { map, Observable, tap } from 'rxjs';
-import { Publicacion } from '../models/publicacion.model.js';
+import { Publicacion, PublicacionCreate } from '../models/publicacion.model.js';
 
 
 @Injectable({
@@ -12,6 +12,10 @@ export class PublicacionService {
   private apiUrl = `${environment.apiUrl}/publicaciones`;
 
   constructor(private http: HttpClient) { }
+
+  crearPublicacion(body: PublicacionCreate) {
+    return this.http.post<Publicacion>(this.apiUrl, body);
+  }
 
   getPublicaciones( from?: string | null, to?: string | null ): Observable<Publicacion[]> {
     let params = new HttpParams();

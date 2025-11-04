@@ -7,7 +7,8 @@ POST http://localhost:3000/api/tiposServicios
 Content-Type: application/json
 
 {
-    "descripcion": "Limpieza general"
+    "descripcion": "Limpieza general",
+    "nombre": "Limpieza"
 }
 
 ### ID 
@@ -21,7 +22,8 @@ PUT http://localhost:3000/api/tiposServicios/{{id}}
 Content-Type: application/json
 
 {
-    "descripcion": "Jardineria"
+    "descripcion": "Jardineria",
+    "nombre": "Jardineria"
 }
 
 

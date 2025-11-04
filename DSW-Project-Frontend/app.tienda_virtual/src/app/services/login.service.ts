@@ -7,8 +7,9 @@ import { User } from '../models/user.js';
 
 interface AuthResponse {
   message: string;
-  data: { user: User };
+  data: any;
   token: string;
+  user: any;
 }
 
 interface RegisterBody {
@@ -27,6 +28,11 @@ interface RegisterBody {
 })
 
 export class LoginService {
+
+  get token(): string | null {
+    return localStorage.getItem('token');
+  }
+
   private apiBase = `${environment.apiUrl}/usuarios`;
   
   private INIT_USER: User = {
@@ -75,20 +81,21 @@ export class LoginService {
     
     const url = `${this.apiBase}/login`;
 
-    return this.http.post<AuthResponse>(url, credentials).pipe(
-      tap(response => {
-        localStorage.setItem('authToken', response.token);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-        this.ensureSubjectsOpen();
-        this._currentUserLoginOn$.next(true);
-        this._currentUserData$.next(response.data.user);
-      }),
-      catchError(this.handleError)
-    );
+    return this.http.post<AuthResponse>(url, credentials)
+      .pipe(
+        tap((response: AuthResponse) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('currentUser', JSON.stringify(response.data.user));
+          this.ensureSubjectsOpen();
+          this._currentUserLoginOn$.next(true);
+          this._currentUserData$.next(response.data.user);
+        }),
+        catchError(this.handleError)
+      );
   }
 
   logout() {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     this._currentUserLoginOn$.next(false);
     this._currentUserData$.next({

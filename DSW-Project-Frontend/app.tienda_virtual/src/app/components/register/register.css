@@ -202,10 +202,10 @@ input:focus {
   width: 100%;
   padding: 1rem;
   margin-top: 1.5rem;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  background: linear-gradient(135deg, rgb(210, 210, 210) 0%, rgb(210, 210, 210) 100%);
   border: none;
   border-radius: 12px;
-  color: white;
+  color: black;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

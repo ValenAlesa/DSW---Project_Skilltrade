@@ -15,9 +15,6 @@ export class Publicacion extends BaseEntity {
 
   @Property({ nullable: false, type: 'date' })
   fecha_publicacion!: Date;
-
-  @Property({ nullable: false, type: 'string' })
-  imagen!: string;
   
   @Property({ nullable: false, type: 'string' })
   titulo!: string;
@@ -25,10 +22,10 @@ export class Publicacion extends BaseEntity {
   @Property({ nullable: false, type: 'decimal' })
   precio!: number;
 
-  @ManyToOne({ entity: () => Usuario, nullable: true })
+  @ManyToOne(() => Usuario, { nullable: false })
   usuario!: Ref<Usuario>;
 
-  @ManyToOne({ entity: () => Servicio, nullable: true })
+  @ManyToOne(() => Servicio, { nullable: false })
   servicio!: Ref<Servicio>;
 
   @OneToMany(() => Reserva, (reserva) => reserva.publicacion)

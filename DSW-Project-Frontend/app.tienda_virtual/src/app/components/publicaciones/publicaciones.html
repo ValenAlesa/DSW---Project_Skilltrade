@@ -1,3 +1,65 @@
+<!-- Botón -->
+<button class="btn-nueva" type="button" (click)="crearVisible = true">
+  + Nueva publicación
+</button>
+
+<!-- Backdrop -->
+<div class="st-backdrop" *ngIf="crearVisible" (click)="cancelarCrear()"></div>
+
+<!-- Modal -->
+<div class="st-modal-create" *ngIf="crearVisible">
+  <button class="st-modal-close" type="button" (click)="cancelarCrear()">×</button>
+  <h3 class="st-modal-title">Crear publicación</h3>
+
+  <form [formGroup]="crearForm" (ngSubmit)="guardarPublicacion()">
+    <label>Título</label>
+    <input type="text" formControlName="titulo" placeholder="Ej: Plomería urgente" />
+
+    <label>Descripción</label>
+    <textarea rows="5" formControlName="descripcion" placeholder="Contá qué ofrecés..."></textarea>
+
+    <div class="st-grid-2">
+      <div>
+        <label>Servicio</label>
+        <select formControlName="servicio_id">
+          <option [ngValue]="null" disabled>Seleccioná…</option>
+          <option *ngFor="let id of [1,2,3,4,5,6,7,8]" [ngValue]="id">
+            {{ getNombreServicio(id) }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label>Precio</label>
+        <input type="number" min="0" step="0.01" formControlName="precio" />
+      </div>
+    </div>
+
+    <div class="st-grid-2">
+      <div>
+        <label>Fecha de publicación</label>
+        <input type="date" formControlName="fecha_publicacion" />
+      </div>
+
+      <div>
+        <label>Estado</label>
+        <select formControlName="estado">
+          <option value="Activa">Activa</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Pausada">Pausada</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="st-actions">
+      <button type="button" class="btn-secondary" (click)="cancelarCrear()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="crearForm.invalid || loading">
+        {{ loading ? 'Publicando…' : 'Publicar' }}
+      </button>
+    </div>
+  </form>
+</div>
+
 <div class="publicaciones-container">
   <!-- Header con gradiente -->
   <div class="hero-header">

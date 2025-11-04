@@ -8,6 +8,7 @@ Content-Type: application/json
 
 {
     "descripcion": "Servicio de limpieza",
+    "nombre": "Limpieza",
     "tipoServicio": 1
 }
 
@@ -23,6 +24,7 @@ Content-Type: application/json
 
 {
     "descripcion": "Servicio de jardineria",
+    "nombre": "Jardineria",
     "tipoServicio": 1
 }
 

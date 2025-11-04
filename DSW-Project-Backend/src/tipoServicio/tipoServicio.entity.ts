@@ -6,8 +6,8 @@ import { Servicio } from './servicio.entity.js';
 export class TipoServicio extends BaseEntity {
     
   @Property({ type: "string", nullable: false })
-  descripcion!: string;
-  
+  nombre!: string;
+
   @OneToMany(() => Servicio, (servicio) => servicio.tipoServicio, 
   { cascade: [Cascade.ALL] })
   servicios = new Collection<Servicio>(this);

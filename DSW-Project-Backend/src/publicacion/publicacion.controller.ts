@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { orm } from "../shared/db/orm.js";
 import { Publicacion } from "./publicacion.entity.js";
+import { Usuario } from "../usuario/usuario.entity.js";
+import { Servicio } from "../tipoServicio/servicio.entity.js";
 
 const em = orm.em
 
@@ -65,15 +67,59 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
-async function add(req: Request, res: Response) {
+async function create(req: Request, res: Response) {
   try {
-    const publicacion = await em.create(Publicacion, req.body);
-    await em.flush(); 
-    res.status(201).json({ message: "Publicacion creada", data: publicacion });
+    console.log('[create] user:', req.user);
+    console.log('[create] body:', req.body);
+    
+    const userId = req.user?.id;
+    const {
+      titulo, 
+      descripcion, 
+      precio, 
+      servicio_id,
+      fecha_publicacion,
+      estado,
+    } = req.body;
+
+    const p = Number(precio);
+    const sid = Number(servicio_id);
+
+    const missing = {
+      titulo: !titulo?.toString().trim(),
+      descripcion: !descripcion?.toString().trim(),
+      precio: Number.isNaN(p),
+      servicio_id: Number.isNaN(sid),
+    };
+
+    if (!userId) return res.status(401).json({ message: "Usuario no autenticado" });
+    if (missing.titulo || missing.descripcion || missing.precio || missing.servicio_id) {
+      return res.status(400).json({ message: "Faltan datos obligatorios", missing });
+    }
+    const servicio = await em.findOne( Servicio, { id: sid } );
+    if (!servicio) {
+      return res.status(400).json({ message: "Servicio no encontrado" });
+    }
+  
+      const pub = em.create(Publicacion, {
+        titulo: String(titulo).trim(),
+        descripcion: String(descripcion).trim(),
+        precio: p,
+        servicio: em.getReference(Servicio, sid),
+        fecha_publicacion: fecha_publicacion ? new Date(fecha_publicacion) : new Date(),
+        estado: estado ?? 'Pendiente',
+        usuario: em.getReference(Usuario, Number(req.user!.id)),
+      });
+
+      await em.persistAndFlush(pub);
+
+      res.status(201).json({ message: "Publicacion creada", data: pub });
   } catch (error: any) {
-    res.status(500).json({ message: "Error al crear Publicacion", error: error.message });
+    console.error('[create] ERROR:', error?.message, error?.stack);
+    res.status(500).json({ message: "Error al crear Publicacion", error: error?.message });
   }
 }
+
 
 async function update(req: Request, res: Response) {
   try {
@@ -98,7 +144,7 @@ async function remove(req: Request, res: Response) {
   }
 };
 
-export { findAll, findOne, add, update, remove };
+export { findAll, findOne, create, update, remove };
     
 
   

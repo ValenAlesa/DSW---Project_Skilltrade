@@ -261,18 +261,18 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(135deg, #1f2937, #111827);
   color: white;
   box-shadow: var(--shadow);
 }
 
 .btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
 }
 
 .btn-secondary {
-  background: var(--gray-100);
+  background: rgb(225, 225, 225);
   color: var(--gray-700);
 }
 
@@ -412,7 +412,7 @@
   top: 1rem;
   right: 1rem;
   background: rgba(255, 255, 255, 0.95);
-  color: var(--primary);
+  color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 2rem;
   font-weight: 700;
@@ -423,8 +423,12 @@
 }
 
 .card-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 5rem;
   opacity: 0.3;
+  line-height: 1;
 }
 
 .service-emoji {
@@ -485,7 +489,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   color: var(--primary);
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, #1f2937, #1f2937);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -506,7 +510,7 @@
 .btn-reserve {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(135deg, #111827, #1f2937);
   color: white;
   border: none;
   border-radius: var(--radius);
@@ -524,7 +528,7 @@
 .btn-reserve:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
 }
 
 .btn-reserve:active {
@@ -720,8 +724,8 @@
 
 .btn-cancel {
   padding: 0.875rem 1.75rem;
-  background: var(--gray-100);
-  color: var(--gray-700);
+  background: #e5e7eb;
+  color: #374151;
   border: none;
   border-radius: var(--radius);
   font-weight: 600;
@@ -730,12 +734,12 @@
 }
 
 .btn-cancel:hover {
-  background: var(--gray-200);
+  background: #d1d5db;
 }
 
 .btn-confirm {
   padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, var(--success), #059669);
+  background: linear-gradient(135deg, #3fa756, #059669);
   color: white;
   border: none;
   border-radius: var(--radius);
@@ -844,4 +848,99 @@
   .price-value {
     font-size: 1.5rem;
   }
+}
+
+/*---- Nueva publicacion CSS ----*/
+
+/* Botón fijo */
+.btn-nueva {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: #0f172a;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: .55rem 1rem;
+  cursor: pointer;
+  z-index: 5000;
+}
+
+/* Backdrop por debajo del modal */
+.st-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  z-index: 4998;
+  /* < modal */
+}
+
+/* Modal: nombre distinto a .modal para evitar colisiones */
+.st-modal-create {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(600px, 92vw);
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+  z-index: 4999;
+  /* > backdrop y por encima de cualquier layout */
+}
+
+.st-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.st-modal-title {
+  margin: 0 0 12px;
+}
+
+.st-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.st-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-primary {
+  background: #1f2937;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  border: 0;
+  border-radius: 8px;
+  padding: .6rem 1rem;
+  cursor: pointer;
+}
+
+/* Para inputs */
+.st-modal-create input,
+.st-modal-create select,
+.st-modal-create textarea {
+  width: 100%;
+  padding: .55rem .7rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin: .3rem 0 .9rem;
 }

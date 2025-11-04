@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { PublicacionService } from '../../services/publicacion.service.js';
-import { Publicacion } from '../../models/publicacion.model.js';
+import { Publicacion, PublicacionCreate } from '../../models/publicacion.model.js';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReservaService } from '../../services/reserva.service.js';
 import { User } from '../../models/user.js';
 import { LoginService } from '../../services/login.service.js';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-publicaciones',
@@ -20,14 +21,14 @@ export class PublicacionesComponent implements OnInit {
   publicaciones: Publicacion[] = [];
   publicacionesFiltradas: Publicacion[] = [];
   pubSeleccionada?: Publicacion;
-  
+
   /* Formulario de reserva */
   reservaForm!: FormGroup;
   showReserva = false;
 
   loading = false;
   errorMsg = '';
-  
+
   /* Filtro por fecha */
   filtro!: FormGroup;
 
@@ -35,10 +36,14 @@ export class PublicacionesComponent implements OnInit {
   searchText = '';
 
   /*Min fecha*/
-  minFecha = new Date().toISOString().slice(0,10);
+  minFecha = new Date().toISOString().slice(0, 10);
 
   /* Usuario logueado */
   user?: User | null;
+
+  /* ---- Crear publicacion ---- */
+  crearVisible = false;
+  crearForm!: FormGroup;
 
   /* Mapeo de servicios con emojis */
   private servicioMap: Record<number, { nombre: string; emoji: string }> = {
@@ -55,19 +60,19 @@ export class PublicacionesComponent implements OnInit {
 
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private publicacion: PublicacionService,
     private router: Router,
     private reserva: ReservaService,
     private auth: LoginService,
-    
-  ) {}
 
-  
+  ) { }
+
 
   ngOnInit(): void {
-    this.auth.currentUserData.subscribe(user => 
-        this.user = user);
+    this.auth.currentUserData.subscribe(user =>
+      this.user = user);
+
     this.filtro = this.fb.group({
       from: [''],
       to: ['']
@@ -79,7 +84,90 @@ export class PublicacionesComponent implements OnInit {
       notas: [''],
     });
 
+    /*---- Form de creación de publicación ----*/
+    this.crearForm = this.fb.group({
+      titulo: ['', [Validators.required, Validators.maxLength(120)]],
+      descripcion: ['', [Validators.required, Validators.maxLength(2000)]],
+      precio: [null, [Validators.required, Validators.min(0)]],
+      servicio_id: [null, Validators.required],
+      fecha_publicacion: [new Date().toISOString().slice(0, 10)],
+      estado: ['Activa'],
+    });
+
     this.buscarPublicaciones();
+  }
+
+  abrirCrear(): void {
+    this.crearVisible = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  cancelarCrear(): void {
+    this.crearVisible = false;
+  }
+
+  guardarPublicacion(): void {
+    if (this.crearForm.invalid) {
+      this.crearForm.markAllAsTouched();
+      return;
+    }
+    const v = this.crearForm.value;
+    const body = {
+      titulo: v.titulo?.toString().trim(),
+      descripcion: v.descripcion?.toString().trim(),
+      precio: Number(v.precio),
+      servicio_id: Number(v.servicio_id),
+      fecha_publicacion: v.fecha_publicacion || new Date().toISOString().slice(0, 10),
+      estado: v.estado || 'Activa',
+    };
+    console.log('BODY ENVIADO:', body);
+
+    this.loading = true;
+
+    this.publicacion.crearPublicacion(body).subscribe({
+      next: () => {
+        this.loading = false;
+
+        this.crearVisible = false;
+        document.body.style.overflow = '';
+
+        this.crearForm.reset({
+          titulo: '',
+          descripcion: '',
+          precio: null,
+          servicio_id: null,
+          fecha_publicacion: new Date().toISOString().slice(0, 10),
+          estado: 'Activa',
+        });
+
+        this.buscarPublicaciones();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Publicación creada con éxito',
+          text: 'Tu publicación ha sido creada exitosamente.',
+          timer: 1800,
+          confirmButtonText: 'Aceptar',
+          buttonsStyling: true,
+          heightAuto: false,
+          backdrop: true,
+        });
+      },
+      error: (err) => {
+        this.loading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la publicación',
+          text: 'Ocurrió un error al crear la publicación. Intenta nuevamente más tarde.',
+          confirmButtonText: 'Aceptar',
+          heightAuto: false,
+        });
+        console.error('Error al crear la publicación:', err);
+      },
+      complete: () => {
+        (this.loading = false);
+      }
+    });
   }
 
   private norm(v?: string | null): string | null {
@@ -93,8 +181,8 @@ export class PublicacionesComponent implements OnInit {
     this.loading = true;
     this.errorMsg = '';
 
-    const { from, to} = this.filtro.value as
-    { from?: string; to?: string};
+    const { from, to } = this.filtro.value as
+      { from?: string; to?: string };
     const f = this.norm(from);
     const t = this.norm(to);
 
@@ -116,7 +204,7 @@ export class PublicacionesComponent implements OnInit {
   }
 
   filtrarPublicaciones(): void {
-    
+
     this.buscarPublicaciones();
   }
 
@@ -143,22 +231,23 @@ export class PublicacionesComponent implements OnInit {
       const titulo = pub.titulo?.toLowerCase() || '';
       const descripcion = pub.descripcion?.toLowerCase() || '';
       const nombreServicio = this.getNombreServicio(pub.servicio_id).toLowerCase();
-      
-      return titulo.includes(search) || 
-             descripcion.includes(search) || 
-             nombreServicio.includes(search);
+
+      return titulo.includes(search) ||
+        descripcion.includes(search) ||
+        nombreServicio.includes(search);
     });
   }
 
-  /*---- Obtener nombre del servicio ----*/
+    /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
     return this.servicioMap[servicio_id]?.nombre ?? 'Servicio';
   }
 
-  /*---- Obtener emoji del servicio ----*/
+ /*---- Obtener emoji del servicio ----*/
   getEmojiServicio(servicio_id: number): string {
     return this.servicioMap[servicio_id]?.emoji ?? '🛠️';
   }
+
 
 
   /*---- Reserva ----*/
@@ -204,14 +293,27 @@ export class PublicacionesComponent implements OnInit {
     this.reserva.crear(body).subscribe({
       next: () => {
         this.loading = false;
-        this.cerrarReserva();
-
-        alert('Reserva creada con éxito.');
+        Swal.fire({
+          icon: 'success',
+          title: 'Reserva creada con éxito',
+          text: 'Su reserva ha sido creada exitosamente.',
+          showConfirmButton: false,
+          timer: 2000,
+          background: '#f9fafb',
+          color: '#1f2937',
+        }).then(() => {
+          this.cerrarReserva();
+          this.router.navigate(['/main-page']);
+        });
       },
       error: (err) => {
         this.loading = false;
-        console.error('[Reserva] HTTP ERROR:', err?.status, err?.error);
-        alert(err?.error?.message || 'Error al crear la reserva. Intente nuevamente.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al crear la reserva',
+          text: err.error?.message || 'Intente nuevamente más tarde.',
+          confirmButtonColor: '#2563eb',
+        });
       },
     });
   }

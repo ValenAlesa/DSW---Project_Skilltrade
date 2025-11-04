@@ -6,9 +6,9 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 export class Servicio extends BaseEntity{
   
   @Property({ type: "string", nullable: false })
-  descripcion!: string;
+  nombre!: string;
   
-  @ManyToOne({ entity: () => TipoServicio, nullable: false })
-  tipoServicio!: Ref<TipoServicio>;
+  @ManyToOne({ entity: () => TipoServicio, nullable: true })
+  tipoServicio?: Ref<TipoServicio>;
   
 }
