@@ -148,7 +148,13 @@ export class PublicacionesComponent implements OnInit {
           text: 'Tu publicación ha sido creada exitosamente.',
           timer: 1800,
           confirmButtonText: 'Aceptar',
-          buttonsStyling: true,
+          buttonsStyling: false,
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            htmlContainer: 'custom-swal-text',
+            confirmButton: 'custom-swal-button'
+          },
           heightAuto: false,
           backdrop: true,
         });
@@ -160,6 +166,13 @@ export class PublicacionesComponent implements OnInit {
           title: 'Error al crear la publicación',
           text: 'Ocurrió un error al crear la publicación. Intenta nuevamente más tarde.',
           confirmButtonText: 'Aceptar',
+          buttonsStyling: false,
+          customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            htmlContainer: 'custom-swal-text',
+            confirmButton: 'custom-swal-button'
+          },
           heightAuto: false,
         });
         console.error('Error al crear la publicación:', err);

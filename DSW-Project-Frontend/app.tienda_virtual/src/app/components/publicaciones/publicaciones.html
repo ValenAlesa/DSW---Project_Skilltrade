@@ -1,59 +1,107 @@
-<!-- Botón -->
-<button class="btn-nueva" type="button" (click)="crearVisible = true">
-  + Nueva publicación
-</button>
-
 <!-- Backdrop -->
 <div class="st-backdrop" *ngIf="crearVisible" (click)="cancelarCrear()"></div>
 
 <!-- Modal -->
 <div class="st-modal-create" *ngIf="crearVisible">
-  <button class="st-modal-close" type="button" (click)="cancelarCrear()">×</button>
-  <h3 class="st-modal-title">Crear publicación</h3>
+  <button class="st-modal-close" type="button" (click)="cancelarCrear()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  
+  <div class="modal-header">
+    <svg class="modal-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+      <path d="M2 17l10 5 10-5"/>
+      <path d="M2 12l10 5 10-5"/>
+    </svg>
+    <h3 class="st-modal-title">Crear Nueva Publicación</h3>
+    <p class="modal-subtitle">Completá los datos de tu servicio</p>
+  </div>
 
   <form [formGroup]="crearForm" (ngSubmit)="guardarPublicacion()">
-    <label>Título</label>
-    <input type="text" formControlName="titulo" placeholder="Ej: Plomería urgente" />
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Título
+      </label>
+      <input type="text" formControlName="titulo" placeholder="Ej: Clases de programación" class="form-input" />
+    </div>
 
-    <label>Descripción</label>
-    <textarea rows="5" formControlName="descripcion" placeholder="Contá qué ofrecés..."></textarea>
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        Descripción
+      </label>
+      <textarea rows="4" formControlName="descripcion" placeholder="Contá en detalle qué servicio ofrecés..." class="form-textarea"></textarea>
+    </div>
 
-    <div class="st-grid-2">
-      <div>
-        <label>Servicio</label>
-        <select formControlName="servicio_id">
-          <option [ngValue]="null" disabled>Seleccioná…</option>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Servicio
+        </label>
+        <select formControlName="servicio_id" class="form-select">
+          <option [ngValue]="null" disabled>Seleccioná una categoría</option>
           <option *ngFor="let id of [1,2,3,4,5,6,7,8]" [ngValue]="id">
             {{ getNombreServicio(id) }}
           </option>
         </select>
       </div>
 
-      <div>
-        <label>Precio</label>
-        <input type="number" min="0" step="0.01" formControlName="precio" />
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          Precio
+        </label>
+        <input type="number" min="0" step="0.01" formControlName="precio" placeholder="0.00" class="form-input" />
       </div>
     </div>
 
-    <div class="st-grid-2">
-      <div>
-        <label>Fecha de publicación</label>
-        <input type="date" formControlName="fecha_publicacion" />
-      </div>
-
-      <div>
-        <label>Estado</label>
-        <select formControlName="estado">
-          <option value="Activa">Activa</option>
-          <option value="Pendiente">Pendiente</option>
-          <option value="Pausada">Pausada</option>
-        </select>
-      </div>
+    <div class="form-group-readonly">
+      <label class="form-label-readonly">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Fecha de publicación
+      </label>
+      <div class="form-value-readonly">{{ crearForm.value.fecha_publicacion | date:'dd/MM/yyyy' }}</div>
     </div>
 
-    <div class="st-actions">
-      <button type="button" class="btn-secondary" (click)="cancelarCrear()">Cancelar</button>
-      <button type="submit" class="btn-primary" [disabled]="crearForm.invalid || loading">
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cancelarCrear()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="crearForm.invalid || loading">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
         {{ loading ? 'Publicando…' : 'Publicar' }}
       </button>
     </div>
@@ -99,6 +147,15 @@
         </svg>
       </button>
     </div>
+    
+    <!-- Botón de Nueva Publicación -->
+    <button class="btn-nueva" type="button" (click)="crearVisible = true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      <span>Nueva publicación</span>
+    </button>
   </div>
 
   <!-- Filtros modernos -->
@@ -227,39 +284,51 @@
 <!-- Modal de reserva mejorado -->
 <div class="modal-overlay" *ngIf="showReserva" (click)="cerrarReserva()">
   <div class="modal-container" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="cerrarReserva()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <button class="modal-close-reserva" (click)="cerrarReserva()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="18" y1="6" x2="6" y2="18"/>
         <line x1="6" y1="6" x2="18" y2="18"/>
       </svg>
     </button>
     
-    <div class="modal-header">
-      <h2 class="modal-title">
-        <svg class="modal-icon-svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
-        </svg>
-        Reservar Servicio
-      </h2>
+    <div class="modal-header-reserva">
+      <svg class="modal-icon-reserva" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      <h2 class="modal-title-reserva">Reservar Servicio</h2>
+      <p class="modal-subtitle-reserva">Completá los datos para tu reserva</p>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body-reserva">
       <div class="service-summary" *ngIf="pubSeleccionada">
-        <div class="summary-row">
-          <span class="summary-label">Servicio:</span>
-          <span class="summary-value">{{ pubSeleccionada.titulo }}</span>
+        <div class="summary-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <div class="summary-content">
+            <span class="summary-label">Servicio</span>
+            <span class="summary-value">{{ pubSeleccionada.titulo }}</span>
+          </div>
         </div>
-        <div class="summary-row">
-          <span class="summary-label">Precio:</span>
-          <span class="summary-price">${{ pubSeleccionada.precio }}</span>
+        <div class="summary-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <div class="summary-content">
+            <span class="summary-label">Precio</span>
+            <span class="summary-price">${{ pubSeleccionada.precio }}</span>
+          </div>
         </div>
       </div>
 
       <form [formGroup]="reservaForm" class="reservation-form">
         <div class="form-group">
-          <label class="form-label">
-            <svg class="label-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <label class="form-label-reserva">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
               <line x1="8" y1="2" x2="8" y2="6"/>
@@ -269,25 +338,24 @@
           </label>
           <input 
             type="date" 
-            class="form-input" 
+            class="form-input-reserva" 
             formControlName="fecha_reserva" 
             [min]="minFecha"
           >
         </div>
 
         <div class="form-group">
-          <label class="form-label">
-            <svg class="label-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <label class="form-label-reserva">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
               <line x1="16" y1="13" x2="8" y2="13"/>
               <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
             </svg>
             Notas adicionales (opcional)
           </label>
           <textarea 
-            class="form-textarea" 
+            class="form-textarea-reserva" 
             formControlName="notas" 
             rows="4"
             placeholder="Escribe aquí cualquier detalle importante: horario preferido, especificaciones, etc."
@@ -296,26 +364,24 @@
       </form>
     </div>
 
-    <div class="modal-footer">
-      <button class="btn btn-cancel" (click)="cerrarReserva()" type="button">
+    <div class="modal-actions-reserva">
+      <button class="btn-cancel-reserva" (click)="cerrarReserva()" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
         Cancelar
       </button>
       <button 
-        class="btn btn-confirm" 
+        class="btn-confirm-reserva" 
         (click)="confirmarReserva()" 
         [disabled]="loading || reservaForm.invalid" 
         type="button"
       >
-        <span *ngIf="!loading" class="btn-content">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          Confirmar Reserva
-        </span>
-        <span *ngIf="loading" class="btn-loading">
-          <span class="mini-spinner"></span>
-          Procesando...
-        </span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        {{ loading ? 'Procesando...' : 'Confirmar Reserva' }}
       </button>
     </div>
   </div>
