@@ -10,11 +10,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2rem;
+  padding: 0 1.8rem;
   height: var(--header-height);
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg, #151515 0%, #151515 100%);
   color: #fff;
-  border-bottom: 3px solid #000;
+  border-bottom: 2px solid #000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
 }
