@@ -582,7 +582,6 @@
   overflow: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   position: relative;
-  animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-close-reserva {
@@ -610,8 +609,8 @@
 }
 
 .modal-header-reserva {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 100%);
+  padding: 2rem 2rem;
   border-radius: 20px 20px 0 0;
   text-align: center;
   position: relative;
@@ -627,14 +626,15 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
-  margin: 0 0 0.75rem;
+  margin: 0 0 1.25rem;
   letter-spacing: -0.5px;
 }
 
 .modal-subtitle-reserva {
-  margin: 0;
+  margin: 0.15rem;
   color: #d1d5db;
   font-size: 0.95rem;
+  font-weight: 400;
   opacity: 0.9;
 }
 
@@ -929,23 +929,23 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
   color: #fff;
-  border: 3px solid #1a1a1a;
+  border: none;
   border-radius: 12px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   white-space: nowrap;
 }
 
 .btn-nueva:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-color: #2d2d2d;
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
 }
 
 .btn-nueva:active {
@@ -1021,11 +1021,15 @@
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  padding: 2.5rem 2rem;
-  border-radius: 20px 20px 0 0;
-  text-align: center;
-  position: relative;
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 100%);
+    padding: 1.75rem 2rem;
+    text-align: center;
+    place-items: center;
+    gap: .30rem;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    position: center;
+    display: grid;
 }
 
 .modal-icon {
@@ -1034,20 +1038,20 @@
   animation: bounce 2s infinite;
 }
 
-.st-modal-title {
-  margin: 0 0 0.75rem;
+.st-modal-title { 
+  margin: 0 0 0.6rem;
   color: #ffffff;
   font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: -0.5px;
 }
 
 .modal-subtitle {
-  margin: 0;
-  color: #d1d5db;
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
+  font-size: 1rem;
+    opacity: 0.85;
+    margin: 0.25rem;
+    font-weight: 400;
+    color: #d1d5db;
+  }
 
 .st-modal-close {
   position: absolute;
