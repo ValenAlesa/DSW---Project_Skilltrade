@@ -1,9 +1,9 @@
 export interface ReservaCreate {
-  fecha_reserva: string;
   estado?: 'pendiente' | 'confirmada' | 'cancelada';
   precio: number;
   publicacion_id: number;
   cliente_id: number;
+  notas?: string;
 };
 
 export interface ReservaModel {

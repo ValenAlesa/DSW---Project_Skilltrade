@@ -13,7 +13,8 @@ export class Publicacion extends BaseEntity {
   @Property({ nullable: false, type: 'string' })
   estado!: string;
 
-  @Property({ nullable: false, type: 'date' })
+  // Store full date-time to reduce timezone related day shifts; was 'date'
+  @Property({ nullable: false, type: 'datetime' })
   fecha_publicacion!: Date;
   
   @Property({ nullable: false, type: 'string' })

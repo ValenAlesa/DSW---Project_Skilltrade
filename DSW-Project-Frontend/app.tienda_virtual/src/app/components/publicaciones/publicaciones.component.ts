@@ -35,8 +35,7 @@ export class PublicacionesComponent implements OnInit {
   /* Búsqueda por texto */
   searchText = '';
 
-  /*Min fecha*/
-  minFecha = new Date().toISOString().slice(0, 10);
+  // Se elimina la fecha de reserva del formulario (la pone el backend)
 
   /* Usuario logueado */
   user?: User | null;
@@ -46,15 +45,29 @@ export class PublicacionesComponent implements OnInit {
   crearForm!: FormGroup;
 
   /* Mapeo de servicios con emojis */
-  private servicioMap: Record<number, { nombre: string; emoji: string }> = {
-    1: { nombre: 'Limpieza', emoji: '🧹' },
-    2: { nombre: 'Plomería', emoji: '🔧' },
-    3: { nombre: 'Electricidad', emoji: '⚡' },
-    4: { nombre: 'Jardinería', emoji: '🌱' },
-    5: { nombre: 'Pintura', emoji: '🎨' },
-    6: { nombre: 'Carpintería', emoji: '🔨' },
-    7: { nombre: 'Albañilería', emoji: '🧱' },
-    8: { nombre: 'Tecnología', emoji: '💻' },
+  private servicioMap: Record<string, string> = {
+    limpieza: '🧹',
+    plomeria: '🔧',
+    electricidad: '⚡',
+    jardineria: '🌱',
+    pintura: '🎨',
+    carpinteria: '🔨',
+    albañileria: '🧱',
+    tecnologia: '💻',
+    software: '💻',
+    mecanica: '⚙️',
+  };
+
+  // Fallback nombres por ID para el selector de creación (coinciden con seed)
+  private servicioIdNombreMap: Record<number, string> = {
+    1: 'Limpieza',
+    2: 'Plomería',
+    3: 'Electricidad',
+    4: 'Jardinería',
+    5: 'Pintura',
+    6: 'Carpintería',
+    7: 'Albañilería',
+    8: 'Tecnología',
   };
 
 
@@ -80,7 +93,6 @@ export class PublicacionesComponent implements OnInit {
 
     /*---- Form de reserva ----*/
     this.reservaForm = this.fb.group({
-      fecha_reserva: ['', Validators.required],
       notas: [''],
     });
 
@@ -90,7 +102,6 @@ export class PublicacionesComponent implements OnInit {
       descripcion: ['', [Validators.required, Validators.maxLength(2000)]],
       precio: [null, [Validators.required, Validators.min(0)]],
       servicio_id: [null, Validators.required],
-      fecha_publicacion: [new Date().toISOString().slice(0, 10)],
       estado: ['Activa'],
     });
 
@@ -117,7 +128,6 @@ export class PublicacionesComponent implements OnInit {
       descripcion: v.descripcion?.toString().trim(),
       precio: Number(v.precio),
       servicio_id: Number(v.servicio_id),
-      fecha_publicacion: v.fecha_publicacion || new Date().toISOString().slice(0, 10),
       estado: v.estado || 'Activa',
     };
     console.log('BODY ENVIADO:', body);
@@ -136,7 +146,6 @@ export class PublicacionesComponent implements OnInit {
           descripcion: '',
           precio: null,
           servicio_id: null,
-          fecha_publicacion: new Date().toISOString().slice(0, 10),
           estado: 'Activa',
         });
 
@@ -146,8 +155,8 @@ export class PublicacionesComponent implements OnInit {
           icon: 'success',
           title: 'Publicación creada con éxito',
           text: 'Tu publicación ha sido creada exitosamente.',
-          timer: 1800,
-          confirmButtonText: 'Aceptar',
+          timer: 2000,
+          showConfirmButton: false,
           buttonsStyling: false,
           customClass: {
             popup: 'custom-swal-popup',
@@ -243,22 +252,32 @@ export class PublicacionesComponent implements OnInit {
     this.publicacionesFiltradas = this.publicaciones.filter(pub => {
       const titulo = pub.titulo?.toLowerCase() || '';
       const descripcion = pub.descripcion?.toLowerCase() || '';
-      const nombreServicio = this.getNombreServicio(pub.servicio_id).toLowerCase();
-
-      return titulo.includes(search) ||
+      const nombreServicio = (pub.servicio?.nombre || this.getNombreServicio(pub.servicio_id)).toLowerCase();
+      return (
+        titulo.includes(search) ||
         descripcion.includes(search) ||
-        nombreServicio.includes(search);
+        nombreServicio.includes(search)
+      );
     });
   }
 
     /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
-    return this.servicioMap[servicio_id]?.nombre ?? 'Servicio';
+    // Nombre poblado si existe alguna publicación con ese servicio
+    const rel = this.publicaciones.find(p => p.servicio_id === servicio_id)?.servicio?.nombre;
+    return rel || this.servicioIdNombreMap[servicio_id] || 'Servicio';
   }
 
- /*---- Obtener emoji del servicio ----*/
-  getEmojiServicio(servicio_id: number): string {
-    return this.servicioMap[servicio_id]?.emoji ?? '🛠️';
+  /*---- Obtener emoji del servicio (usa nombre si está disponible) ----*/
+  getEmojiServicio(pub: Publicacion): string {
+    const nombre = pub.servicio?.nombre || this.getNombreServicio(pub.servicio_id);
+    const key = nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    for (const k of Object.keys(this.servicioMap)) {
+      if (key.includes(k)) {
+        return this.servicioMap[k];
+      }
+    }
+    return '🛠️';
   }
 
 
@@ -267,7 +286,6 @@ export class PublicacionesComponent implements OnInit {
   abrirReserva(pub: Publicacion) {
     this.pubSeleccionada = pub;
     this.reservaForm.reset({
-      fecha_reserva: '',
       notas: '',
     });
     this.showReserva = true;
@@ -292,7 +310,6 @@ export class PublicacionesComponent implements OnInit {
     }
 
     const body = {
-      fecha_reserva: this.reservaForm.value.fecha_reserva,
       estado: 'pendiente' as const,
       precio: Number(this.pubSeleccionada!.precio),
       notas: this.reservaForm.value.notas || '',
@@ -309,7 +326,7 @@ export class PublicacionesComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Reserva creada con éxito',
-          text: 'Su reserva ha sido creada exitosamente.',
+          text: 'Su reserva ha sido registrada exitosamente.',
           showConfirmButton: false,
           timer: 2000,
           background: '#f9fafb',

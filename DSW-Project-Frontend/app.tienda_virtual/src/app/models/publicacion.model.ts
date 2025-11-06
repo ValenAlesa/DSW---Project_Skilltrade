@@ -4,6 +4,8 @@ export interface Publicacion {
   descripcion: string;
   precio: number;
   servicio_id: number;
+  // When backend populates relation, this field will be present
+  servicio?: { id: number; nombre: string };
   fecha_publicacion?: string;
   estado?: 'Pendiente' | 'Activa' | 'Inactiva';
   usuario_id: number;

@@ -14,7 +14,7 @@ export class Reserva {
   @PrimaryKey()
   id!: number;
 
-  @Property({ type: 'date', nullable: false })
+  @Property({ type: 'datetime', nullable: false })
   fecha_reserva!: Date;
 
   @Property({ type: 'string', length: 20, default: 'pendiente', nullable: false })

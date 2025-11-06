@@ -21,15 +21,33 @@ function parseDateDMYYorISO(v?: string): Date | undefined {
   return undefined;
 }
 
+function parseLocalDay(v?: string): Date | undefined {
+  if (!v) return undefined;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    const [y, m, d] = v.split('-').map(Number);
+    return new Date(y, (m as number) - 1, d as number, 12, 0, 0, 0);
+  }
+  const m = v.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/);
+  if (m) {
+    const day = parseInt(m[1]);
+    const month = parseInt(m[2]) - 1;
+    const year = parseInt(m[3]);
+    return new Date(year, month, day, 12, 0, 0, 0);
+  }
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? undefined : d;
+}
+
 
 async function findAll(req: Request, res: Response) {
   try {
 
-    const rawFrom = req.query.from as string | undefined;
-    const rawTo = req.query.to as string | undefined;
+  const rawFrom = req.query.from as string | undefined;
+  const rawTo = req.query.to as string | undefined;
 
-    const from = parseDateDMYYorISO(rawFrom);
-    const to = parseDateDMYYorISO(rawTo);
+  // Parse date-only strings using LOCAL time, to avoid UTC shift issues
+  const from = parseLocalDay(rawFrom);
+  const to = parseLocalDay(rawTo);
 
     const em = orm.em.fork();
     
@@ -48,8 +66,14 @@ async function findAll(req: Request, res: Response) {
     }
     where.fecha_publicacion = rango;
   }
-    const publicaciones = await em.find( Publicacion, where,
-      { orderBy: { fecha_publicacion: 'DESC' } }  );
+    const publicaciones = await em.find(
+      Publicacion,
+      where,
+      {
+        orderBy: { fecha_publicacion: 'DESC' },
+        populate: ['servicio'], // include servicio so frontend has the service name
+      }
+    );
     res.status(200).json({ message: "Publicaciones obtenidas", data: publicaciones });
   } catch (error: any) {
     res.status(500).json({ message: "Error al obtener Publicaciones", error: error.message });
@@ -60,7 +84,7 @@ async function findOne(req: Request, res: Response) {
   try {
     const em = orm.em.fork();
     const id = Number.parseInt(req.params.id)
-    const publicacion = await em.findOne( Publicacion, { id } );
+  const publicacion = await em.findOne( Publicacion, { id }, { populate: ['servicio'] } );
     res.status(200).json({ message: "Publicacion obtenida", data: publicacion });
   } catch (error: any) {
     res.status(500).json({ message: "Error al obtener Publicacion", error: error.message });
@@ -106,7 +130,8 @@ async function create(req: Request, res: Response) {
         descripcion: String(descripcion).trim(),
         precio: p,
         servicio: em.getReference(Servicio, sid),
-        fecha_publicacion: fecha_publicacion ? new Date(fecha_publicacion) : new Date(),
+        // Always use server current date-time to avoid client/timezone inconsistencies
+        fecha_publicacion: new Date(),
         estado: estado ?? 'Pendiente',
         usuario: em.getReference(Usuario, Number(req.user!.id)),
       });

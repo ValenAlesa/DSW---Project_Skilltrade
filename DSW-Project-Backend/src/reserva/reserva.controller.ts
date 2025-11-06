@@ -13,29 +13,25 @@ async function create(req: Request, res: Response) {
   try {
     const body = req.body ?? {};
 
-    const fecha_reserva = body.fecha_reserva ?? body.fechaReserva;
-    const estado = body.estado ?? 'pendiente';
+  const estado = body.estado ?? 'pendiente';
     const precio = typeof body.precio === 'number' ? String(body.precio) : body.precio;
     const notas = body.notas ?? '';
 
     const clienteId = Number(body.clienteId ?? body.cliente_id);
     const publicacionId = Number(body.publicacionId ?? body.publicacion_id);
 
-    if (!fecha_reserva || !clienteId || !publicacionId) {
+    if (!clienteId || !publicacionId) {
       return res.status(400).json({
         message: 'Faltan datos obligatorios',
         missing: {
-          fecha_reserva: !fecha_reserva,
           clienteId: !clienteId,
           publicacionId: !publicacionId,
         },
       });
     }
 
-    const d = new Date(fecha_reserva);
-    if (Number.isNaN(d.getTime())) {
-      return res.status(400).json({ message: 'fecha_invalida' });
-    }
+    // Set current server date/time for reservation date
+    const d = new Date();
 
     const reserva = em.create(Reserva, {
       fecha_reserva: d,
