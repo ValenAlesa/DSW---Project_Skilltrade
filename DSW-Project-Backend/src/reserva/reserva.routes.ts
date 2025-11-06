@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { create, findAll, findOne, update, remove } from './reserva.controller.js';
+import { create, findAll, findOne, update, remove, findByUsuario } from './reserva.controller.js';
+import { auth } from '../auth/auth.js';
 
 export const reservaRouter = Router();
 
-reservaRouter.get('/', findAll);
-reservaRouter.get('/:id', findOne);
-reservaRouter.post('/', create);
-reservaRouter.patch('/:id', update);
-reservaRouter.delete('/:id', remove);
+reservaRouter.get('/', auth, findAll);
+reservaRouter.get('/usuarios/:id', auth, findByUsuario);
+reservaRouter.get('/:id', auth, findOne);
+reservaRouter.post('/', auth, create);
+reservaRouter.patch('/:id', auth, update);
+reservaRouter.delete('/:id', auth, remove);

@@ -3,11 +3,17 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { authGuard } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
+import { MisReservasComponent } from './pages/mis-reservas/mis-reservas.component';
 
 export const routes: Routes = [
   {
     path: 'main-page',
     component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'mis-reservas',
+    component: MisReservasComponent,
     canActivate: [authGuard],
   },
   {

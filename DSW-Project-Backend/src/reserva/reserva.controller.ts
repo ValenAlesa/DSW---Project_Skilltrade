@@ -136,7 +136,32 @@ async function remove(req: Request, res: Response) {
   }
 };
 
-export { create, findAll, findOne, update, remove };
+/* -----Find reservas by cliente/usuario----- */
+async function findByUsuario(req: Request, res: Response) {
+  try {
+    const usuarioId = Number.parseInt(req.params.id);
+
+    if (!usuarioId) {
+      return res.status(400).json({ message: 'ID de usuario inválido' });
+    }
+
+    const reservas = await em.find(
+      Reserva,
+      { cliente: usuarioId },
+      { 
+        orderBy: { fecha_reserva: 'DESC' },
+        populate: ['cliente', 'publicacion', 'publicacion.servicio', 'publicacion.usuario']
+      }
+    );
+
+    return res.status(200).json({ message: 'Reservas del usuario obtenidas', data: reservas });
+  } catch (error: any) {
+    console.error('[GET /reservas/usuarios/:id] error:', error);
+    res.status(500).json({ message: 'Error al obtener reservas del usuario', error: error.message });
+  }
+}
+
+export { create, findAll, findOne, update, remove, findByUsuario };
     
 
   

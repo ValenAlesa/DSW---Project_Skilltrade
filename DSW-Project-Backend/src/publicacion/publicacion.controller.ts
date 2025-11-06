@@ -41,6 +41,7 @@ function parseLocalDay(v?: string): Date | undefined {
 
 async function findAll(req: Request, res: Response) {
   try {
+    console.log('[findAll] req.user:', req.user);
 
   const rawFrom = req.query.from as string | undefined;
   const rawTo = req.query.to as string | undefined;
@@ -52,6 +53,14 @@ async function findAll(req: Request, res: Response) {
     const em = orm.em.fork();
     
     const where : any = {};
+
+    // Filter by current user: only show publicaciones created by this user
+    if (req.user?.id) {
+      console.log('[findAll] Filtrando por usuario:', req.user.id);
+      where.usuario = req.user.id; // MikroORM interprets this as usuario_id = X
+    } else {
+      console.log('[findAll] ⚠️ No hay req.user - mostrando todas las publicaciones');
+    }
 
     if(from || to) {
     const rango: any = {};

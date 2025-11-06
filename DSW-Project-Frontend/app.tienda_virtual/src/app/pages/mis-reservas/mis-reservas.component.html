@@ -1,0 +1,99 @@
+<div class="mis-reservas-container">
+  <!-- Header con gradiente -->
+  <div class="hero-header">
+    <h1 class="main-title">
+      <svg class="title-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      Mis Reservas
+    </h1>
+    <p class="subtitle">Aquí puedes ver todas tus reservas realizadas</p>
+  </div>
+
+  <!-- Estados de carga -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p class="loading-text">Cargando tus reservas...</p>
+  </div>
+
+  <div *ngIf="errorMsg && !loading" class="alert alert-error">
+    <svg class="alert-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="!loading && !errorMsg && reservas.length === 0" class="empty-state">
+    <svg class="empty-icon-svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+    <h3>No tienes reservas aún</h3>
+    <p>Cuando realices una reserva, aparecerá aquí.</p>
+  </div>
+
+  <!-- Grid de reservas -->
+  <div class="publications-grid" *ngIf="!loading && reservas.length > 0">
+    <article class="publication-card" *ngFor="let reserva of reservas">
+      <div class="card-image-container">
+        <div [class]="'card-badge ' + getEstadoClass(reserva.estado)">{{ reserva.estado }}</div>
+        <div class="card-image-placeholder">
+          <span class="service-emoji">{{ reserva.publicacion?.servicio?.emoji || '📋' }}</span>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <h3 class="card-title">{{ reserva.publicacion?.titulo || 'Sin título' }}</h3>
+        <p class="card-description">{{ reserva.publicacion?.descripcion || 'Sin descripción' }}</p>
+        
+        <div class="card-details">
+          <div class="detail-item" *ngIf="reserva.publicacion?.usuario">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <span>{{ reserva.publicacion?.usuario?.nombre }} {{ reserva.publicacion?.usuario?.apellido }}</span>
+          </div>
+          
+          <div class="detail-item" *ngIf="reserva.publicacion?.servicio">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <span>{{ reserva.publicacion?.servicio?.nombre }}</span>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="card-meta">
+            <div class="price-tag">
+              <span class="price-label">Precio</span>
+              <span class="price-value">${{ reserva.publicacion?.precio || reserva.precio }}</span>
+            </div>
+            <div class="date-info">
+              <svg class="date-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <div class="date-column">
+                <span class="date-label">Reservado</span>
+                <span class="date-text">{{ reserva.fecha_reserva | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
