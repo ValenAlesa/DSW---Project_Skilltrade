@@ -9,7 +9,6 @@ export const routes: Routes = [
   {
     path: 'main-page',
     component: DashboardComponent,
-    canActivate: [authGuard],
   },
   {
     path: 'mis-reservas',
