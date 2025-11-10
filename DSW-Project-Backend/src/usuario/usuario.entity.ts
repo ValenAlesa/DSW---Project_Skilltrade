@@ -30,7 +30,7 @@ export class Usuario extends BaseEntity {
   @Property({ nullable: true, type: 'string' })
   domicilio?: string;
 
-  @ManyToOne({ entity: () => Ciudad, nullable: true })
+  @ManyToOne({ entity: () => Ciudad, nullable: false })
   ciudad!: Ref<Ciudad>;
 
   @OneToMany(() => Publicacion, (publicacion) => publicacion.usuario, 
