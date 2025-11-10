@@ -6,20 +6,6 @@ import { Servicio } from "../tipoServicio/servicio.entity.js";
 
 const em = orm.em
 
-function parseDateDMYYorISO(v?: string): Date | undefined {
-  if(!v) return undefined;
-  if(/^\d{4}-\d{2}-\d{2}$/.test(v)) {
-    return new Date(v + 'T00:00:00Z');
-  }
-  const m = v.match (/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/);
-  if(m) {
-    const day = parseInt(m[1]);
-    const month = parseInt(m[2]) - 1;
-    const year = parseInt(m[3]);
-    return new Date(Date.UTC(year, month, day));
-  }
-  return undefined;
-}
 
 function parseLocalDay(v?: string): Date | undefined {
   if (!v) return undefined;
