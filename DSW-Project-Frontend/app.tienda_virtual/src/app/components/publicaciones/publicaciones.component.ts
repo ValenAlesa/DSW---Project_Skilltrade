@@ -261,6 +261,14 @@ export class PublicacionesComponent implements OnInit {
     });
   }
 
+  /*---- Saber si la publicacion es del usuario logueado ----*/
+  esPropia(pub: Publicacion): boolean {
+    if (!this.user?.id) return false;
+    // Algunas publicaciones pueden venir sin usuario poblado; usar usuario_id
+    const ownerId = (pub as any).usuario?.id ?? pub.usuario_id;
+    return Number(ownerId) === Number(this.user.id);
+  }
+
     /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
     // Nombre poblado si existe alguna publicación con ese servicio

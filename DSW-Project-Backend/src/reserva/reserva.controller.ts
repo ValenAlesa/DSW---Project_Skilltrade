@@ -30,6 +30,15 @@ async function create(req: Request, res: Response) {
       });
     }
 
+    // Validate that the publication exists and is not owned by the same user
+    const publicacion = await em.findOne(Publicacion, { id: publicacionId }, { populate: ['usuario'] });
+    if (!publicacion) {
+      return res.status(404).json({ message: 'Publicación no encontrada' });
+    }
+    if (publicacion.usuario && Number(publicacion.usuario.id) === clienteId) {
+      return res.status(400).json({ message: 'No puedes reservar tu propia publicación' });
+    }
+
     // Set current server date/time for reservation date
     const d = new Date();
 
@@ -38,7 +47,7 @@ async function create(req: Request, res: Response) {
       estado,
       notas,
       precio,
-      publicacion: em.getReference(Publicacion, publicacionId),
+      publicacion: publicacion,
       cliente: em.getReference(Usuario, clienteId),
     });
 

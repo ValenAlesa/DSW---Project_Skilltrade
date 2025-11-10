@@ -27,40 +27,31 @@ function parseLocalDay(v?: string): Date | undefined {
 
 async function findAll(req: Request, res: Response) {
   try {
-    console.log('[findAll] req.user:', req.user);
+    const rawFrom = req.query.from as string | undefined;
+    const rawTo = req.query.to as string | undefined;
 
-  const rawFrom = req.query.from as string | undefined;
-  const rawTo = req.query.to as string | undefined;
-
-  // Parse date-only strings using LOCAL time, to avoid UTC shift issues
-  const from = parseLocalDay(rawFrom);
-  const to = parseLocalDay(rawTo);
+    // Parse date-only strings using LOCAL time, to avoid UTC shift issues
+    const from = parseLocalDay(rawFrom);
+    const to = parseLocalDay(rawTo);
 
     const em = orm.em.fork();
-    
-    const where : any = {};
 
-    // Filter by current user: only show publicaciones created by this user
-    if (req.user?.id) {
-      console.log('[findAll] Filtrando por usuario:', req.user.id);
-      where.usuario = req.user.id; // MikroORM interprets this as usuario_id = X
-    } else {
-      console.log('[findAll] ⚠️ No hay req.user - mostrando todas las publicaciones');
+    const where: any = {};
+
+    // Date range filter (optional)
+    if (from || to) {
+      const rango: any = {};
+      if (from) {
+        from.setHours(0, 0, 0, 0);
+        rango.$gte = from;
+      }
+      if (to) {
+        to.setHours(23, 59, 59, 999);
+        rango.$lte = to;
+      }
+      where.fecha_publicacion = rango;
     }
 
-    if(from || to) {
-    const rango: any = {};
-
-    if(from) {
-      from.setHours(0,0,0,0);
-      rango.$gte = from;
-    }
-    if(to) {
-      to.setHours(23,59,59,999);
-      rango.$lte = to;
-    }
-    where.fecha_publicacion = rango;
-  }
     const publicaciones = await em.find(
       Publicacion,
       where,
@@ -69,11 +60,11 @@ async function findAll(req: Request, res: Response) {
         populate: ['servicio'], // include servicio so frontend has the service name
       }
     );
-    res.status(200).json({ message: "Publicaciones obtenidas", data: publicaciones });
+    res.status(200).json({ message: 'Publicaciones obtenidas', data: publicaciones });
   } catch (error: any) {
-    res.status(500).json({ message: "Error al obtener Publicaciones", error: error.message });
+    res.status(500).json({ message: 'Error al obtener Publicaciones', error: error.message });
   }
-} 
+}
 
 async function findOne(req: Request, res: Response) {
   try {

@@ -4,9 +4,11 @@ import { auth } from '../auth/auth.js';
 
 export const publicacionRouter = Router();
 
-/* Rutas protegidas con auth middleware - usuario solo ve sus publicaciones */
-publicacionRouter.get("/", auth, findAll);
-publicacionRouter.get("/:id", auth, findOne);
+// Listado público: cualquiera puede ver las publicaciones
+publicacionRouter.get("/", findAll);
+publicacionRouter.get("/:id", findOne);
+
+// Operaciones que modifican datos: requieren autenticación
 publicacionRouter.post("/", auth, create);
 publicacionRouter.put("/:id", auth, update);
 publicacionRouter.delete("/:id", auth, remove);
