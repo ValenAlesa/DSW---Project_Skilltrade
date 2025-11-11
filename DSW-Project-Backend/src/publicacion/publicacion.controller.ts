@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { orm } from "../shared/db/orm.js";
 import { Publicacion } from "./publicacion.entity.js";
 import { Usuario } from "../usuario/usuario.entity.js";
-import { Servicio } from "../tipoServicio/servicio.entity.js";
+import { Servicio } from "../servicio/servicio.entity.js";
 
 const em = orm.em
 

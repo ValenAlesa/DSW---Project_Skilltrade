@@ -8,6 +8,7 @@ import { ReservaService } from '../../services/reserva.service.js';
 import { User } from '../../models/user.js';
 import { LoginService } from '../../services/login.service.js';
 import Swal from 'sweetalert2';
+import { RolService } from '../../services/rol.service.js';
 
 @Component({
   selector: 'app-publicaciones',
@@ -17,6 +18,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./publicaciones.css'],
 })
 export class PublicacionesComponent implements OnInit {
+
+  esAdmin: boolean = false;
 
   publicaciones: Publicacion[] = [];
   publicacionesFiltradas: Publicacion[] = [];
@@ -78,11 +81,15 @@ export class PublicacionesComponent implements OnInit {
     private router: Router,
     private reserva: ReservaService,
     private auth: LoginService,
+    private rolService: RolService,
 
   ) { }
 
 
   ngOnInit(): void {
+    this.rolService.esAdmin().subscribe(esAdmin => {
+      this.esAdmin = esAdmin;
+    });
     // Inicializar TODOS los formularios PRIMERO
     this.filtro = this.fb.group({
       from: [''],
@@ -312,7 +319,25 @@ export class PublicacionesComponent implements OnInit {
     return '🛠️';
   }
 
-
+    moderarPublicacion(pub: Publicacion): void {
+    console.log('[moderarPublicacion] Publicación a moderar:', pub);
+    Swal.fire({
+      title: '¿Deseas moderar esta publicación?',
+      text: `¿Qué acción deseas realizar con "${pub.titulo}"?`,
+      icon: 'question',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Aprobar',
+      denyButtonText: 'Rechazar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Aprobar publicación (Por ejemplo)
+      } else if (result.isDenied) {
+        // Rechazar publicación (Por ejemplo)
+      }
+    });
+  }
 
   /*---- Reserva ----*/
   abrirReserva(pub: Publicacion) {

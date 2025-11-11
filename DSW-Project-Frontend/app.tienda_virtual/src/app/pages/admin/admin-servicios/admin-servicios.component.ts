@@ -22,6 +22,20 @@ export class AdminServiciosComponent implements OnInit {
   crearServicioForm: FormGroup;
   editarForm: FormGroup;
 
+  /* Mapeo de servicios con emojis */
+  private servicioMap: Record<string, string> = {
+    limpieza: '🧹',
+    plomeria: '🔧',
+    electricidad: '⚡',
+    jardineria: '🌱',
+    pintura: '🎨',
+    carpinteria: '🔨',
+    albañileria: '🧱',
+    tecnologia: '💻',
+    software: '💻',
+    mecanica: '⚙️',
+  };
+
   constructor(
     private adminServiciosService: AdminServiciosService,
     private fb: FormBuilder,
@@ -159,5 +173,22 @@ export class AdminServiciosComponent implements OnInit {
         });
       }
     });
+  }
+
+  getEmojiServicio(servicio: Servicio): string {
+    if (!servicio.nombre) return '🛠️';
+    
+    const nombre = servicio.nombre.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+    
+    for (const key of Object.keys(this.servicioMap)) {
+      if (nombre.includes(key)) {
+        return this.servicioMap[key];
+      }
+    }
+    
+    return '🛠️'; // Emoji por defecto
   }
 }

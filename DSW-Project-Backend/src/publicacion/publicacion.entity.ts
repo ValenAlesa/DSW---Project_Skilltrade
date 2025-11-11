@@ -1,7 +1,7 @@
 import { Entity, Property, ManyToOne, Ref, OneToMany, Collection } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
-import { Servicio } from '../tipoServicio/servicio.entity.js';
+import { Servicio } from '../servicio/servicio.entity.js';
 import { Reserva } from '../reserva/reserva.entity.js';
 
 @Entity()

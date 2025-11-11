@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { orm } from '../shared/db/orm.js';
-import { Servicio } from '../tipoServicio/servicio.entity.js';
+import { Servicio } from '../servicio/servicio.entity.js';
 
 async function main() {
   const em = orm.em.fork();

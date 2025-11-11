@@ -5,7 +5,7 @@ import cors from "cors";
 /* Routers */
 import { provinciaRouter } from "./provincia/provincia.routes.js";
 import { ciudadRouter } from "./provincia/ciudad.routes.js";
-import { servicioRouter } from "./tipoServicio/servicio.routes.js";
+import { servicioRouter } from "./servicio/servicio.routes.js";
 import { publicacionRouter } from "./publicacion/publicacion.routes.js";
 import { usuarioRouter } from "./usuario/usuario.routes.js";
 import authRouter from "./auth/auth.routes.js";

@@ -1,24 +1,25 @@
 <div class="admin-usuarios-container">
+  <!-- Botón volver -->
+  <button class="btn-volver" (click)="volver()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
+    Volver
+  </button>
+
   <!-- Hero Header -->
   <div class="hero-header">
-    <button class="btn-volver" (click)="volver()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="19" y1="12" x2="5" y2="12"/>
-        <polyline points="12 19 5 12 12 5"/>
-      </svg>
-      Volver
-    </button>
-    
-    <h1 class="main-title">
-      <svg class="title-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="hero-pattern"></div>
+    <div class="hero-content">
+      <svg class="hero-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="9" cy="7" r="4"/>
         <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
-      Gestión de Usuarios
-    </h1>
-    <p class="subtitle">Gestiona todos los usuarios del sistema</p>
+      <h1 class="hero-title">Gestión de Usuarios</h1>
+      <p class="hero-subtitle">Gestiona todos los usuarios del sistema</p>
+    </div>
   </div>
 
   <!-- Action Section (botón para crear) -->

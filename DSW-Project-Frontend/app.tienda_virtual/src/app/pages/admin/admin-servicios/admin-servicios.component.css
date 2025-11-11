@@ -49,7 +49,7 @@
 
 .hero-header {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 2rem 1rem;
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   border-radius: var(--radius-lg);
   color: var(--dark);
@@ -76,7 +76,7 @@
 
 .hero-icon {
   color: #1a1a1a;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   animation: bounce 2s infinite;
 }
 
@@ -124,6 +124,7 @@
 
 .actions-section {
   margin-bottom: 2rem;
+  padding: 0 0 2rem 0;
   display: flex;
   justify-content: center;
 }
@@ -275,6 +276,12 @@
   color: #1e293b;
   width: 60px;
   height: 60px;
+}
+
+.service-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  user-select: none;
 }
 
 .card-content {

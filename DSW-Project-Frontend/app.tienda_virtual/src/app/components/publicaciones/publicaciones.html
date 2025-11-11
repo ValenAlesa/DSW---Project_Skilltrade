@@ -138,7 +138,7 @@
     </div>
     
     <!-- Botón de Nueva Publicación -->
-    <button class="btn-nueva" type="button" (click)="crearVisible = true" *ngIf="user && user.id">
+    <button class="btn-nueva" type="button" (click)="crearVisible = true" *ngIf="user && user.id && !esAdmin">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="12" y1="5" x2="12" y2="19"/>
         <line x1="5" y1="12" x2="19" y2="12"/>
@@ -260,14 +260,26 @@
             </div>
           </div>
           
-          <button class="btn-reserve" (click)="abrirReserva(p)" [disabled]="esPropia(p)">
+          <button class="btn-reserve" (click)="abrirReserva(p)" [disabled]="esPropia(p)" *ngIf="!esAdmin">
             <svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
             Reservar Ahora
           </button>
-          
-          <small *ngIf="!user" class="login-hint">
+
+          <button
+            class="btn-moderate"
+            (click)="moderarPublicacion(p)"
+            *ngIf="esAdmin"
+          >
+            <svg class="btn-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Moderar Publicación
+        </button>
+
+          <small *ngIf="!user && !esAdmin" class="login-hint">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -275,7 +287,7 @@
             Inicia sesión para reservar
           </small>
 
-          <small *ngIf="user && esPropia(p)" class="login-hint">
+          <small *ngIf="user && esPropia(p) && !esAdmin" class="login-hint">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
               <line x1="8" y1="12" x2="16" y2="12"/>
