@@ -17,3 +17,64 @@ body {
 .ng-invalid:not(form).ng-touched {
   border-left: 5px solid #a94442; /* red */
 }
+
+/* SweetAlert2 Custom Styles */
+.custom-swal-popup {
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.custom-swal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.custom-swal-text {
+  font-size: 1rem;
+  color: #475569;
+}
+
+.custom-swal-button,
+.custom-swal-button-delete,
+.custom-swal-button-cancel {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.custom-swal-button {
+  background-color: #6366f1;
+  color: white;
+}
+
+.custom-swal-button:hover {
+  background-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.custom-swal-button-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.custom-swal-button-delete:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.custom-swal-button-cancel {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.custom-swal-button-cancel:hover {
+  background-color: #e2e8f0;
+}

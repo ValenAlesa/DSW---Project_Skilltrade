@@ -83,9 +83,7 @@ export class PublicacionesComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.auth.currentUserData.subscribe(user =>
-      this.user = user);
-
+    // Inicializar TODOS los formularios PRIMERO
     this.filtro = this.fb.group({
       from: [''],
       to: ['']
@@ -105,7 +103,13 @@ export class PublicacionesComponent implements OnInit {
       estado: ['Activa'],
     });
 
-    this.buscarPublicaciones();
+    // DESPUÉS suscribirse (ahora filtro ya existe cuando se llame a buscarPublicaciones)
+    this.auth.currentUserData.subscribe(user => {
+      console.log('[Publicaciones] Usuario actual:', user);
+      this.user = user;
+      // Recargar publicaciones cuando cambie el estado de autenticación
+      this.buscarPublicaciones();
+    });
   }
 
   abrirCrear(): void {
@@ -200,6 +204,20 @@ export class PublicacionesComponent implements OnInit {
   }
 
   buscarPublicaciones(): void {
+    console.log('[buscarPublicaciones] Usuario:', this.user);
+    console.log('[buscarPublicaciones] Usuario ID:', this.user?.id);
+    console.log('[buscarPublicaciones] Condición (!this.user || !this.user.id):', (!this.user || !this.user.id));
+    
+    // Si no hay usuario autenticado, no cargar publicaciones
+    if (!this.user || !this.user.id) {
+      console.log('[buscarPublicaciones] No hay usuario autenticado, no se cargan publicaciones');
+      this.loading = false;
+      this.publicaciones = [];
+      this.publicacionesFiltradas = [];
+      return;
+    }
+
+    console.log('[buscarPublicaciones] Usuario autenticado, cargando publicaciones...');
     this.loading = true;
     this.errorMsg = '';
 
@@ -210,16 +228,22 @@ export class PublicacionesComponent implements OnInit {
 
     this.publicacion.getPublicaciones(f, t).subscribe({
       next: (data: Publicacion[]) => {
+        console.log('[buscarPublicaciones] Datos recibidos del backend:', data);
+        console.log('[buscarPublicaciones] Cantidad de publicaciones:', data?.length);
         this.publicaciones = data ?? [];
         this.aplicarBusquedaTexto();
+        console.log('[buscarPublicaciones] Publicaciones asignadas:', this.publicaciones.length);
       },
       error: (err) => {
-        console.error(err);
+        console.error('[buscarPublicaciones] Error al cargar:', err);
         this.errorMsg = 'Error al cargar las publicaciones.';
         this.publicaciones = [];
         this.publicacionesFiltradas = [];
       },
-      complete: () => (this.loading = false),
+      complete: () => {
+        console.log('[buscarPublicaciones] Complete - loading=false');
+        this.loading = false;
+      }
     });
 
 
@@ -346,11 +370,16 @@ export class PublicacionesComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
+        const errorMessage = err.error?.message || 'Intente nuevamente más tarde.';
+        const isDuplicateReservation = errorMessage.includes('Ya tienes una reserva pendiente');
+        
         Swal.fire({
-          icon: 'error',
-          title: 'Error al crear la reserva',
-          text: err.error?.message || 'Intente nuevamente más tarde.',
+          icon: isDuplicateReservation ? 'warning' : 'error',
+          title: isDuplicateReservation ? 'Reserva Existente' : 'Error al crear la reserva',
+          text: errorMessage,
+          confirmButtonText: 'Aceptar',
           confirmButtonColor: '#2563eb',
+          heightAuto: false,
         });
       },
     });

@@ -9,6 +9,8 @@ export interface Publicacion {
   fecha_publicacion?: string;
   estado?: 'Pendiente' | 'Activa' | 'Inactiva';
   usuario_id: number;
+  // When backend populates usuario relation
+  usuario?: { id: number; username?: string; email?: string };
 };
 
 export interface PublicacionCreate {

@@ -57,7 +57,7 @@ async function findAll(req: Request, res: Response) {
       where,
       {
         orderBy: { fecha_publicacion: 'DESC' },
-        populate: ['servicio'], // include servicio so frontend has the service name
+        populate: ['servicio', 'usuario'], // include servicio and usuario for filtering
       }
     );
     res.status(200).json({ message: 'Publicaciones obtenidas', data: publicaciones });
@@ -134,10 +134,22 @@ async function create(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const publicacion = await em.getReference( Publicacion, id );
-    em.assign(Publicacion, req.body);
+    const em = orm.em.fork();
+    const id = Number.parseInt(req.params.id);
+    const publicacion = await em.findOne(Publicacion, { id });
+    
+    if (!publicacion) {
+      return res.status(404).json({ message: "Publicacion no encontrada" });
+    }
+
+    // Verificar que el usuario sea el dueño de la publicación
+    if (publicacion.usuario.id !== req.user?.id) {
+      return res.status(403).json({ message: "No tienes permiso para editar esta publicación" });
+    }
+
+    em.assign(publicacion, req.body);
     await em.flush();
+    
     res.status(200).json({ message: "Publicacion actualizada", data: publicacion });
   } catch (error: any) {
     res.status(500).json({ message: "Error al actualizar Publicacion", error: error.message });
@@ -146,9 +158,20 @@ async function update(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const publicacion = await em.getReference( Publicacion, id );
-    await em.removeAndFlush(Publicacion);
+    const em = orm.em.fork();
+    const id = Number.parseInt(req.params.id);
+    const publicacion = await em.findOne(Publicacion, { id }, { populate: ['usuario'] });
+    
+    if (!publicacion) {
+      return res.status(404).json({ message: "Publicacion no encontrada" });
+    }
+
+    // Verificar que el usuario sea el dueño de la publicación
+    if (publicacion.usuario.id !== req.user?.id) {
+      return res.status(403).json({ message: "No tienes permiso para eliminar esta publicación" });
+    }
+
+    await em.removeAndFlush(publicacion);
     res.status(200).json({ message: "Publicacion eliminada", data: publicacion });
   } catch (error: any) {
     res.status(500).json({ message: "Error al eliminar Publicacion", error: error.message });

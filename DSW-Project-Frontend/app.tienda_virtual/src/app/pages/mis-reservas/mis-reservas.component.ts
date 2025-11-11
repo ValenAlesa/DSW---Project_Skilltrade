@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ReservaService } from '../../services/reserva.service.js';
 import { LoginService } from '../../services/login.service.js';
 import { ReservaModel } from '../../models/reserva.model.js';
@@ -18,7 +19,8 @@ export class MisReservasComponent implements OnInit {
 
   constructor(
     private reservaService: ReservaService,
-    private auth: LoginService
+    private auth: LoginService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -60,5 +62,9 @@ export class MisReservasComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  volver(): void {
+    this.router.navigate(['/']);
   }
 }

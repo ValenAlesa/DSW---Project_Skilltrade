@@ -39,6 +39,17 @@ async function create(req: Request, res: Response) {
       return res.status(400).json({ message: 'No puedes reservar tu propia publicación' });
     }
 
+    // Check if user already has a pending reservation for this publication
+    const reservaExistente = await em.findOne(Reserva, {
+      cliente: clienteId,
+      publicacion: publicacionId,
+      estado: 'pendiente'
+    });
+    
+    if (reservaExistente) {
+      return res.status(400).json({ message: 'Ya tienes una reserva pendiente para esta publicación' });
+    }
+
     // Set current server date/time for reservation date
     const d = new Date();
 

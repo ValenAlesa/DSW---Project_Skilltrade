@@ -40,4 +40,12 @@ export class PublicacionService {
   getPublicacion(id: number): Observable<Publicacion> {
     return this.http.get<Publicacion>(`${this.apiUrl}/${id}`);
   }
+
+  actualizarPublicacion(id: number, body: Partial<PublicacionCreate>): Observable<{ message: string; data: Publicacion }> {
+    return this.http.put<{ message: string; data: Publicacion }>(`${this.apiUrl}/${id}`, body);
+  }
+
+  eliminarPublicacion(id: number): Observable<{ message: string; data: Publicacion }> {
+    return this.http.delete<{ message: string; data: Publicacion }>(`${this.apiUrl}/${id}`);
+  }
 }
