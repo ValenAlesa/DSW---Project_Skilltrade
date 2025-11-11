@@ -5,7 +5,6 @@ import cors from "cors";
 /* Routers */
 import { provinciaRouter } from "./provincia/provincia.routes.js";
 import { ciudadRouter } from "./provincia/ciudad.routes.js";
-import { tipoServicioRouter } from "./tipoServicio/tipoServicio.routes.js";
 import { servicioRouter } from "./tipoServicio/servicio.routes.js";
 import { publicacionRouter } from "./publicacion/publicacion.routes.js";
 import { usuarioRouter } from "./usuario/usuario.routes.js";
@@ -34,7 +33,6 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRouter);
 
 /* RUTAS CRUD */
-app.use("/api/tiposServicios", tipoServicioRouter);
 app.use("/api/ciudades", ciudadRouter);
 app.use("/api/servicios", servicioRouter);
 app.use("/api/publicaciones", publicacionRouter);

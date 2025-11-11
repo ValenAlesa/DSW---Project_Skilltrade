@@ -1,5 +1,4 @@
-import { Entity, ManyToOne, Property, Ref } from '@mikro-orm/core';
-import { TipoServicio } from './tipoServicio.entity.js';
+import { Entity, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
 @Entity()
@@ -7,8 +6,5 @@ export class Servicio extends BaseEntity{
   
   @Property({ type: "string", nullable: false })
   nombre!: string;
-  
-  @ManyToOne({ entity: () => TipoServicio, nullable: true })
-  tipoServicio?: Ref<TipoServicio>;
   
 }
