@@ -17,15 +17,15 @@ import Swal from "sweetalert2";
   styleUrls: ['./admin-usuarios.component.css'],
 })
 export class AdminUsuariosComponent implements OnInit {
-  crearAdminForm!: FormGroup;
+  crearUsuarioForm!: FormGroup;
   loading = false;
   showModal = false;
 
-  administradores: User[] = []; 
+  usuarios: User[] = []; 
   loadingLista = false;
   editarVisible = false;
   editarForm!: FormGroup;
-  adminSeleccionado: User | null = null;
+  usuarioSeleccionado: User | null = null;
 
   constructor(private fb: FormBuilder,
     private router: Router,
@@ -34,13 +34,13 @@ export class AdminUsuariosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.crearAdminForm = this.fb.group({
+    this.crearUsuarioForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       telefono: [''],
       domicilio: [''],
-      rol: ['ADMINISTRADOR'] 
+      rol: ['CLIENTE', Validators.required] // Ahora es un campo editable
     });
 
 
@@ -49,29 +49,30 @@ export class AdminUsuariosComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       telefono: [''],
       domicilio: [''],
+      rol: ['', Validators.required] // Agregar rol al formulario de edición
     });
 
-    this.cargarAdministradores();
+    this.cargarUsuarios();
   }
 
-  cargarAdministradores(): void {
+  cargarUsuarios(): void {
     this.loadingLista = true;
     
     // Obtener el ID del usuario actual desde localStorage
     const currentUserJson = localStorage.getItem('currentUser');
     const currentUserId = currentUserJson ? JSON.parse(currentUserJson).id : null;
     
-    this.adminService.getAdministradores().subscribe({
-      next: (admins: User[]) => {
-        this.administradores = (admins || []).filter(admin => admin.id !== currentUserId);
+    this.adminService.getUsuarios().subscribe({
+      next: (users: User[]) => {
+        this.usuarios = (users || []).filter(user => user.id !== currentUserId);
         this.loadingLista = false;
       },
       error: (err: any) => {
-        console.error('Error al cargar administradores:', err);
+        console.error('Error al cargar usuarios:', err);
         this.loadingLista = false;
         Swal.fire({
           title: 'Error',
-          text: 'Error al cargar la lista de administradores.',
+          text: 'Error al cargar la lista de usuarios.',
           icon: 'error',
           confirmButtonColor: '#ef4444'
         });
@@ -90,32 +91,32 @@ export class AdminUsuariosComponent implements OnInit {
 
   cerrarModal(): void {
     this.showModal = false;
-    this.crearAdminForm.reset({ rol: 'ADMINISTRADOR' });
+    this.crearUsuarioForm.reset({ rol: 'CLIENTE' });
   }
 
-  crearAdmin(): void {
-    if (this.crearAdminForm.invalid) return;
+  crearUsuario(): void {
+    if (this.crearUsuarioForm.invalid) return;
 
     this.loading = true;
-    const adminData = this.crearAdminForm.value;
+    const userData = this.crearUsuarioForm.value;
 
-    this.adminService.crearAdministrador(adminData).subscribe({
+    this.adminService.crearUsuario(userData).subscribe({
       next: (response: any) => {
         this.loading = false;
         Swal.fire({
           title: '¡Éxito!',
-          text: 'Administrador creado correctamente',
+          text: 'Usuario creado correctamente',
           icon: 'success',
           confirmButtonColor: '#6366f1'
         });
         this.cerrarModal();
-        this.cargarAdministradores(); 
+        this.cargarUsuarios(); 
       },
       error: (error: any) => {
         this.loading = false;
         Swal.fire({
           title: 'Error',
-          text: error.error?.message || 'No se pudo crear el administrador',
+          text: error.error?.message || 'No se pudo crear el usuario',
           icon: 'error',
           confirmButtonColor: '#ef4444'
         });
@@ -123,34 +124,35 @@ export class AdminUsuariosComponent implements OnInit {
     });
   }
 
-  abrirEditar(admin: User): void {
-    this.adminSeleccionado = admin;
+  abrirEditar(usuario: User): void {
+    this.usuarioSeleccionado = usuario;
     this.editarForm.patchValue({
-      username: admin.username,
-      email: admin.email,
-      telefono: admin.telefono || '',
-      domicilio: admin.domicilio || ''
+      username: usuario.username,
+      email: usuario.email,
+      telefono: usuario.telefono || '',
+      domicilio: usuario.domicilio || '',
+      rol: usuario.rol || 'CLIENTE'
     });
     this.editarVisible = true;
   }
 
   guardarEdicion(): void {
-    if (this.editarForm.invalid || !this.adminSeleccionado) return;
+    if (this.editarForm.invalid || !this.usuarioSeleccionado) return;
 
     this.loading = true;
     const datos = this.editarForm.value;
 
-    this.adminService.updateAdministrador(this.adminSeleccionado.id, datos).subscribe({
+    this.adminService.updateUsuario(this.usuarioSeleccionado.id, datos).subscribe({
       next: () => {
         this.loading = false;
         Swal.fire({
           title: '¡Éxito!',
-          text: 'Administrador actualizado correctamente',
+          text: 'Usuario actualizado correctamente',
           icon: 'success',
           confirmButtonColor: '#6366f1'
         });
         this.cancelarEditar();
-        this.cargarAdministradores();
+        this.cargarUsuarios();
       },
       error: (error: any) => {
         this.loading = false;
@@ -166,14 +168,14 @@ export class AdminUsuariosComponent implements OnInit {
 
   cancelarEditar(): void {
     this.editarVisible = false;
-    this.adminSeleccionado = null;
+    this.usuarioSeleccionado = null;
     this.editarForm.reset();
   }
 
-  eliminarAdministrador(admin: User): void {
+  eliminarUsuario(usuario: User): void {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Se eliminará al administrador ${admin.username}`,
+      text: `Se eliminará al usuario ${usuario.username}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
@@ -182,15 +184,15 @@ export class AdminUsuariosComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.adminService.deleteAdministrador(admin.id).subscribe({
+        this.adminService.deleteUsuario(usuario.id).subscribe({
           next: () => {
             Swal.fire({
               title: '¡Eliminado!',
-              text: 'El administrador ha sido eliminado',
+              text: 'El usuario ha sido eliminado',
               icon: 'success',
               confirmButtonColor: '#6366f1'
             });
-            this.cargarAdministradores();
+            this.cargarUsuarios();
           },
           error: (error: any) => {
             Swal.fire({
@@ -205,9 +207,9 @@ export class AdminUsuariosComponent implements OnInit {
     });
   }
 
-  get username() { return this.crearAdminForm.get('username'); }
-  get email() { return this.crearAdminForm.get('email'); }
-  get password() { return this.crearAdminForm.get('password'); }
+  get username() { return this.crearUsuarioForm.get('username'); }
+  get email() { return this.crearUsuarioForm.get('email'); }
+  get password() { return this.crearUsuarioForm.get('password'); }
   
   get editUsername() { return this.editarForm.get('username'); }
   get editEmail() { return this.editarForm.get('email'); }

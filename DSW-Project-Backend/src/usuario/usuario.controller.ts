@@ -69,8 +69,12 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const em = orm.em.fork();
-    const id = Number.parseInt(req.params.id)
-    const usuario = await em.getReference(Usuario, id);
+    const id = Number.parseInt(req.params.id);
+    const usuario = await em.findOne(Usuario, { id });
+
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
 
     // Si se proporciona una nueva contraseña, hashearla
     if (req.body.password) {
@@ -88,12 +92,37 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const em = orm.em.fork();
-    const id = Number.parseInt(req.params.id)
-    const usuario = await em.getReference(Usuario, id);
+    const id = Number.parseInt(req.params.id);
+    
+    // Cargar el usuario con todas sus relaciones
+    const usuario = await em.findOne(Usuario, { id }, {
+      populate: ['publicaciones', 'reservas']
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Verificar si tiene reservas (estas bloquean la eliminación)
+    await usuario.reservas.loadItems();
+    if (usuario.reservas.length > 0) {
+      // Eliminar todas las reservas del usuario primero
+      for (const reserva of usuario.reservas) {
+        em.remove(reserva);
+      }
+    }
+
+    // Las publicaciones se eliminan automáticamente por Cascade.ALL
+    // Ahora eliminamos el usuario
     await em.removeAndFlush(usuario);
+    
     res.status(200).json({ message: "Usuario eliminado", data: { id } });
   } catch (error: any) {
-    res.status(500).json({ message: "Error al eliminar usuario", error: error.message });
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({ 
+      message: "Error al eliminar usuario", 
+      error: error.message 
+    });
   }
 };
 

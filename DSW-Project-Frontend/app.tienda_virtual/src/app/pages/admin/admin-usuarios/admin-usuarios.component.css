@@ -135,7 +135,7 @@
 }
 
 .btn-crear-admin {
-  background: linear-gradient(135deg, #1f2937, #111827);
+  background: linear-gradient(135deg, #111827, #000000);
   color: white;
   border: none;
   padding: 0.875rem 1.75rem;
@@ -151,7 +151,7 @@
 }
 
 .btn-crear-admin:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #000000, #000000);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
@@ -307,7 +307,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.1) 0%, rgba(17, 24, 39, 0.1) 100%);
 }
 
 .service-emoji {
@@ -416,23 +416,23 @@
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #1f2937, #111827);
+  background: linear-gradient(135deg, #111827, #000000);
   color: white;
 }
 
 .btn-edit:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #000000, #000000);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .btn-delete {
-  background: linear-gradient(135deg, red 0%, darkred 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
   color: white;
 }
 
 .btn-delete:hover {
-  background: linear-gradient(135deg, darkred 0%, red 100%);
+  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
@@ -539,7 +539,7 @@
 }
 
 .modal-header-dark {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #111827 0%, #000000 100%);
   color: white;
   text-align: center;
   padding: 3rem 2rem 2rem;
@@ -595,12 +595,13 @@
 .form-select-editar {
   width: 100%;
   padding: 1rem 1.25rem;
-  border: 2px solid var(--gray-200);
+  border: 2px solid var(--gray-400);
   border-radius: 12px;
   font-size: 1rem;
   transition: var(--transition);
   font-family: inherit;
-  background: var(--gray-50);
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-input-editar:focus,
@@ -658,12 +659,12 @@
 }
 
 .btn-submit-editar {
-  background: #1e293b;
+  background: linear-gradient(135deg, #111827, #000000);
   color: white;
 }
 
 .btn-submit-editar:hover:not(:disabled) {
-  background: #0f172a;
+  background: linear-gradient(135deg, #000000, #000000);
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
@@ -822,7 +823,7 @@
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #111827 0%, #000000 100%);
   color: white;
   text-align: center;
   padding: 3rem 2rem 2rem;
@@ -874,19 +875,43 @@
 .form-input {
   width: 100%;
   padding: 1rem 1.25rem;
-  border: 2px solid var(--gray-200);
+  border: 2px solid var(--gray-400);
   border-radius: 12px;
   font-size: 1rem;
   transition: var(--transition);
   font-family: inherit;
-  background: var(--gray-50);
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.form-input:focus {
+.form-input:focus,
+.form-select:focus {
   outline: none;
   border-color: var(--primary);
   background: white;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.form-select {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--gray-400);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: var(--transition);
+  font-family: inherit;
+  background: white;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.25rem center;
+  padding-right: 3rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-select:hover {
+  border-color: var(--gray-300);
 }
 
 .form-error {
@@ -938,12 +963,12 @@
 }
 
 .btn-submit {
-  background: #1e293b;
+  background: linear-gradient(135deg, #111827, #000000);
   color: white;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #0f172a;
+  background: linear-gradient(135deg, #000000, #000000);
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
