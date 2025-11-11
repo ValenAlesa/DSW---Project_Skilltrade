@@ -231,6 +231,16 @@
       
       <div class="card-content">
         <h3 class="card-title">{{ p.titulo }}</h3>
+
+        <!-- Usuario creador -->
+        <div class="card-author" *ngIf="p.usuario?.username">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span>{{ p.usuario?.username }}</span>
+        </div>
+
         <p class="card-description">{{ p.descripcion }}</p>
         
         <div class="card-footer">
