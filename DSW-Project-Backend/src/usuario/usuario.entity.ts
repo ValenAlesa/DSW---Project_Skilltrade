@@ -12,8 +12,8 @@ export enum RolUsuario {
 @Entity()
 export class Usuario extends BaseEntity {
 
-  @Enum({ items: () => RolUsuario, nullable: true })
-  rol?: RolUsuario;
+  @Enum({ items: () => RolUsuario, default: RolUsuario.CLIENTE })
+  rol: RolUsuario = RolUsuario.CLIENTE;
 
   @Property({ nullable: false, type: 'string'})
   username!: string;

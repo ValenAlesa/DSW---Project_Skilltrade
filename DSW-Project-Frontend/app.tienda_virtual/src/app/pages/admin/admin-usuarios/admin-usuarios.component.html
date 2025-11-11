@@ -1,0 +1,323 @@
+<div class="admin-usuarios-container">
+  <!-- Hero Header -->
+  <div class="hero-header">
+    <button class="btn-volver" (click)="volver()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Volver
+    </button>
+    
+    <h1 class="main-title">
+      <svg class="title-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Gestión de Administradores
+    </h1>
+    <p class="subtitle">Gestiona los administradores del sistema</p>
+  </div>
+
+  <!-- Action Section (botón para crear) -->
+  <div class="action-section">
+    <button class="btn-crear-admin" (click)="abrirModal()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="16"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Crear Nuevo Administrador
+    </button>
+  </div>
+
+  <!-- Estados de carga -->
+  <div *ngIf="loadingLista" class="loading-container">
+    <div class="spinner"></div>
+    <p class="loading-text">Cargando administradores...</p>
+  </div>
+
+  <div *ngIf="!loadingLista && !administradores.length" class="empty-state">
+    <svg class="empty-icon-svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    <h3>No hay administradores registrados</h3>
+    <p>Cuando crees un administrador, aparecerá aquí.</p>
+  </div>
+
+  <!-- Grid de administradores (estilo igual a publicaciones) -->
+  <div class="publications-grid" *ngIf="!loadingLista && administradores.length">
+    <article class="publication-card" *ngFor="let admin of administradores">
+      <div class="card-image-container">
+        <div class="card-badge">ADMINISTRADOR</div>
+        <div class="card-image-placeholder">
+          <div class="admin-avatar-circle">
+            <svg class="admin-icon-svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <h3 class="card-title">{{ admin.username }}</h3>
+        <p class="card-description">{{ admin.email }}</p>
+        
+        <div class="card-footer">
+          <div class="card-meta">
+            <div class="admin-info">
+              <div class="info-row" *ngIf="admin.telefono">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <span class="info-text">{{ admin.telefono }}</span>
+              </div>
+              <div class="info-row" *ngIf="admin.domicilio">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span class="info-text">{{ admin.domicilio }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-edit" (click)="abrirEditar(admin)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+              </svg>
+              Editar
+            </button>
+            <button class="btn-delete" (click)="eliminarAdministrador(admin)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="cerrarModal()"></div>
+<div class="modal-container" *ngIf="showModal">
+  <button class="modal-close" (click)="cerrarModal()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  </button>
+
+  <div class="modal-header">
+    <svg class="modal-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="8.5" cy="7" r="4" />
+      <line x1="20" y1="8" x2="20" y2="14" />
+      <line x1="23" y1="11" x2="17" y2="11" />
+    </svg>
+    <h2 class="modal-title">Crear Nuevo Administrador</h2>
+    <p class="modal-subtitle">Complete los datos para crear una cuenta de administrador</p>
+  </div>
+
+  <form [formGroup]="crearAdminForm" (ngSubmit)="crearAdmin()" class="modal-form">
+    <!-- Username -->
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        Nombre de usuario *
+      </label>
+      <input type="text" formControlName="username" class="form-input" placeholder="Ingrese el nombre de usuario" />
+      <span class="form-error" *ngIf="username?.invalid && username?.touched">
+        <span *ngIf="username?.errors?.['required']">El nombre de usuario es requerido</span>
+        <span *ngIf="username?.errors?.['minlength']">Debe tener al menos 3 caracteres</span>
+      </span>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+        Correo electrónico *
+      </label>
+      <input type="email" formControlName="email" class="form-input" placeholder="admin@ejemplo.com" />
+      <span class="form-error" *ngIf="email?.invalid && email?.touched">
+        <span *ngIf="email?.errors?.['required']">El email es requerido</span>
+        <span *ngIf="email?.errors?.['email']">Ingrese un email válido</span>
+      </span>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        Contraseña *
+      </label>
+      <input type="password" formControlName="password" class="form-input" placeholder="Mínimo 6 caracteres" />
+      <span class="form-error" *ngIf="password?.invalid && password?.touched">
+        <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
+        <span *ngIf="password?.errors?.['minlength']">Debe tener al menos 6 caracteres</span>
+      </span>
+    </div>
+
+    <!-- Fila con Teléfono y Domicilio -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          Teléfono
+        </label>
+        <input type="tel" formControlName="telefono" class="form-input" placeholder="Opcional" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Domicilio
+        </label>
+        <input type="text" formControlName="domicilio" class="form-input" placeholder="Opcional" />
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cerrarModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        {{ loading ? 'Creando...' : 'Crear Administrador' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Modal de EDITAR -->
+<div class="modal-backdrop" *ngIf="editarVisible" (click)="cancelarEditar()"></div>
+<div class="modal-container" *ngIf="editarVisible">
+  <button class="modal-close" (click)="cancelarEditar()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  </button>
+
+  <div class="modal-header">
+    <svg class="modal-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+    </svg>
+    <h2 class="modal-title">Editar Administrador</h2>
+    <p class="modal-subtitle">Actualiza los datos del administrador</p>
+  </div>
+
+  <form [formGroup]="editarForm" (ngSubmit)="guardarEdicion()" class="modal-form">
+    <!-- Username -->
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        Nombre de usuario *
+      </label>
+      <input type="text" formControlName="username" class="form-input" />
+      <span class="form-error" *ngIf="editUsername?.invalid && editUsername?.touched">
+        <span *ngIf="editUsername?.errors?.['required']">El nombre de usuario es requerido</span>
+        <span *ngIf="editUsername?.errors?.['minlength']">Debe tener al menos 3 caracteres</span>
+      </span>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label class="form-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+        Correo electrónico *
+      </label>
+      <input type="email" formControlName="email" class="form-input" />
+      <span class="form-error" *ngIf="editEmail?.invalid && editEmail?.touched">
+        <span *ngIf="editEmail?.errors?.['required']">El email es requerido</span>
+        <span *ngIf="editEmail?.errors?.['email']">Ingrese un email válido</span>
+      </span>
+    </div>
+
+    <!-- Fila con Teléfono y Domicilio -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          Teléfono
+        </label>
+        <input type="tel" formControlName="telefono" class="form-input" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Domicilio
+        </label>
+        <input type="text" formControlName="domicilio" class="form-input" />
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button type="button" class="btn-cancel" (click)="cancelarEditar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+        Cancelar
+      </button>
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        {{ loading ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+    </div>
+  </form>
+</div>

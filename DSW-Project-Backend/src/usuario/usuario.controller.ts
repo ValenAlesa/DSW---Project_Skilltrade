@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { orm } from "../shared/db/orm.js";
-import { Usuario } from "./usuario.entity.js";
+import { Usuario, RolUsuario } from "./usuario.entity.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { RequiredEntityData } from "@mikro-orm/core";
@@ -20,6 +20,22 @@ async function findAll(req: Request, res: Response) {
     res.status(200).json({ message: "Usuarios obtenidos", data: usuarios.map(safeUser) });
   } catch (error: any) {
     res.status(500).json({ message: "Error al obtener usuarios", error });
+  }
+}
+
+async function findAdministradores(req: Request, res: Response) {
+  try {
+    const em = orm.em.fork();
+    const administradores = await em.find(Usuario, { rol: RolUsuario.ADMINISTRADOR });
+    res.status(200).json({ 
+      message: "Administradores obtenidos", 
+      data: administradores.map(safeUser) 
+    });
+  } catch (error: any) {
+    res.status(500).json({ 
+      message: "Error al obtener administradores", 
+      error: error.message 
+    });
   }
 }
 
@@ -159,7 +175,7 @@ async function register(req: Request, res: Response) {
       password: hash,
       telefono,
       domicilio,
-      rol, 
+      rol: rol || RolUsuario.CLIENTE, // Asignar CLIENTE por defecto si no se especifica
       ciudad
     });
 
@@ -172,5 +188,5 @@ async function register(req: Request, res: Response) {
   }
 }
     
-export { findAll, findOne, add, update, remove, login, register };
+export { findAll, findOne, add, update, remove, login, register, findAdministradores };
 

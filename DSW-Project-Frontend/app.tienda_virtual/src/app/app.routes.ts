@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { MisReservasComponent } from './pages/mis-reservas/mis-reservas.component';
 import { MisPublicacionesComponent } from './pages/mis-publicaciones/mis-publicaciones.component';
 import { MiPerfilComponent } from './pages/mi-perfil/mi-perfil.component';
+import { adminGuard, clienteGuard } from './guards/admin.guard.js';
 
 export const routes: Routes = [
   {
@@ -15,12 +16,12 @@ export const routes: Routes = [
   {
     path: 'mis-reservas',
     component: MisReservasComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, clienteGuard],
   },
   {
     path: 'mis-publicaciones',
     component: MisPublicacionesComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, clienteGuard],
   },
   {
     path: 'mi-perfil',
@@ -35,6 +36,24 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent
   },
+  {
+    path: 'admin/dashboard',
+    loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component')
+      .then(m => m.AdminDashboardComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'admin/usuarios',
+    loadComponent: () => import('./pages/admin/admin-usuarios/admin-usuarios.component')
+      .then(m => m.AdminUsuariosComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+  path: 'admin/servicios',
+  loadComponent: () => import('./pages/admin/admin-servicios/admin-servicios.component')
+    .then(m => m.AdminServiciosComponent),
+  canActivate: [authGuard, adminGuard],
+},
   {
     path: '',
     redirectTo: 'main-page',

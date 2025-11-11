@@ -1,13 +1,16 @@
 import { Router } from 'express';
-import { findAll, findOne, add, update, remove, login, register } from './usuario.controller.js';
+import { findAll, findOne, add, update, remove, login, register, findAdministradores } from './usuario.controller.js';
 
 export const usuarioRouter = Router();
 
-/* Login route */
+/* Login router */
 usuarioRouter.post("/login", login);
 
-/* Register route */
+/* Register router */
 usuarioRouter.post("/register", register);
+
+/* Obtener solo administradores */
+usuarioRouter.get("/administradores", findAdministradores);
 
 /* CRUD routes */
 usuarioRouter.get("/", findAll);

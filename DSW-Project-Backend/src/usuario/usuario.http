@@ -7,14 +7,14 @@ POST http://localhost:3000/api/usuarios
 Content-Type: application/json
 
 {
-    "username": "martiniano1567@gmail.com",
-    "email": "martiniano1567@gmail.com",
-    "password": "Hola2025",
-    "rol": "CLIENTE",
-    "telefono": "1234567890",
-    "domicilio": "Calle Mitre 123",
-    "ciudad_id": 1
+  "username": "admin1",
+  "email": "admin@skilltrade.com",
+  "password": "admin123",
+  "telefono": "3415551234",
+  "domicilio": "Rosario, Santa Fe",
+  "rol": "ADMINISTRADOR"
 }
+
 
 ### ID 
 @id = {{createUsuario.response.body.data.id}}
