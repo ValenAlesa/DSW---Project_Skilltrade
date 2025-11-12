@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { catchError, Observable, throwError, BehaviorSubject, tap} from 'rxjs';
 import { environment } from '../../environments/environment.js';
 import { LoginRequest } from '../models/loginRequest.js';

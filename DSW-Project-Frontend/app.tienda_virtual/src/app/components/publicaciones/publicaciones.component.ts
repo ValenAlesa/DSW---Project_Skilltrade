@@ -38,8 +38,6 @@ export class PublicacionesComponent implements OnInit {
   /* Búsqueda por texto */
   searchText = '';
 
-  // Se elimina la fecha de reserva del formulario (la pone el backend)
-
   /* Usuario logueado */
   user?: User | null;
 
@@ -61,7 +59,6 @@ export class PublicacionesComponent implements OnInit {
     mecanica: '⚙️',
   };
 
-  // Fallback nombres por ID para el selector de creación (coinciden con seed)
   private servicioIdNombreMap: Record<number, string> = {
     1: 'Limpieza',
     2: 'Plomería',
@@ -90,7 +87,7 @@ export class PublicacionesComponent implements OnInit {
     this.rolService.esAdmin().subscribe(esAdmin => {
       this.esAdmin = esAdmin;
     });
-    // Inicializar TODOS los formularios PRIMERO
+    
     this.filtro = this.fb.group({
       from: [''],
       to: ['']
@@ -110,11 +107,9 @@ export class PublicacionesComponent implements OnInit {
       estado: ['Activa'],
     });
 
-    // DESPUÉS suscribirse (ahora filtro ya existe cuando se llame a buscarPublicaciones)
     this.auth.currentUserData.subscribe(user => {
       console.log('[Publicaciones] Usuario actual:', user);
       this.user = user;
-      // Recargar publicaciones cuando cambie el estado de autenticación
       this.buscarPublicaciones();
     });
   }
@@ -215,7 +210,6 @@ export class PublicacionesComponent implements OnInit {
     console.log('[buscarPublicaciones] Usuario ID:', this.user?.id);
     console.log('[buscarPublicaciones] Condición (!this.user || !this.user.id):', (!this.user || !this.user.id));
     
-    // Si no hay usuario autenticado, no cargar publicaciones
     if (!this.user || !this.user.id) {
       console.log('[buscarPublicaciones] No hay usuario autenticado, no se cargan publicaciones');
       this.loading = false;
@@ -295,14 +289,12 @@ export class PublicacionesComponent implements OnInit {
   /*---- Saber si la publicacion es del usuario logueado ----*/
   esPropia(pub: Publicacion): boolean {
     if (!this.user?.id) return false;
-    // Algunas publicaciones pueden venir sin usuario poblado; usar usuario_id
     const ownerId = (pub as any).usuario?.id ?? pub.usuario_id;
     return Number(ownerId) === Number(this.user.id);
   }
 
     /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
-    // Nombre poblado si existe alguna publicación con ese servicio
     const rel = this.publicaciones.find(p => p.servicio_id === servicio_id)?.servicio?.nombre;
     return rel || this.servicioIdNombreMap[servicio_id] || 'Servicio';
   }

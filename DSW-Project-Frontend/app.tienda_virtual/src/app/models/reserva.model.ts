@@ -41,7 +41,6 @@ export interface ReservaModel {
   cliente_id: number;
   createdAt?: string;
   updatedAt?: string;
-  // Populated relations
   publicacion?: PublicacionInfo;
   cliente?: UsuarioInfo;
 }
