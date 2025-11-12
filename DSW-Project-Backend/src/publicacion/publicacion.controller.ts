@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ref } from "@mikro-orm/core";
 import { orm } from "../shared/db/orm.js";
 import { Publicacion } from "./publicacion.entity.js";
 import { Usuario } from "../usuario/usuario.entity.js";
@@ -136,22 +137,52 @@ async function update(req: Request, res: Response) {
   try {
     const em = orm.em.fork();
     const id = Number.parseInt(req.params.id);
-    const publicacion = await em.findOne(Publicacion, { id });
+    const publicacion = await em.findOne(Publicacion, { id }, { populate: ['usuario', 'servicio'] });
     
     if (!publicacion) {
       return res.status(404).json({ message: "Publicacion no encontrada" });
     }
 
     // Verificar que el usuario sea el dueño de la publicación
-    if (publicacion.usuario.id !== req.user?.id) {
+    // Cuando hacemos populate, publicacion.usuario ya es la entidad Usuario, no un Ref
+    const usuarioId = typeof publicacion.usuario === 'object' && 'id' in publicacion.usuario 
+      ? publicacion.usuario.id 
+      : undefined;
+      
+    if (usuarioId !== req.user?.id) {
       return res.status(403).json({ message: "No tienes permiso para editar esta publicación" });
     }
 
-    em.assign(publicacion, req.body);
+    // Extraer servicio_id del body si existe
+    const { servicio_id, titulo, descripcion, precio, estado } = req.body;
+
+    // Actualizar campos simples
+    if (titulo !== undefined) publicacion.titulo = titulo.toString().trim();
+    if (descripcion !== undefined) publicacion.descripcion = descripcion.toString().trim();
+    if (precio !== undefined) publicacion.precio = Number(precio);
+    if (estado !== undefined) publicacion.estado = estado;
+
+    // Si se proporciona servicio_id, actualizar la referencia
+    if (servicio_id !== undefined) {
+      const sid = Number(servicio_id);
+      if (!Number.isNaN(sid)) {
+        const servicio = await em.findOne(Servicio, { id: sid });
+        if (!servicio) {
+          return res.status(400).json({ message: "Servicio no encontrado" });
+        }
+        publicacion.servicio = ref(servicio);
+      }
+    }
+
     await em.flush();
+    
+    // Recargar la publicación con las relaciones pobladas
+    await em.refresh(publicacion);
+    await em.populate(publicacion, ['servicio', 'usuario']);
     
     res.status(200).json({ message: "Publicacion actualizada", data: publicacion });
   } catch (error: any) {
+    console.error('[update] ERROR:', error?.message, error?.stack);
     res.status(500).json({ message: "Error al actualizar Publicacion", error: error.message });
   }
 }
@@ -167,7 +198,12 @@ async function remove(req: Request, res: Response) {
     }
 
     // Verificar que el usuario sea el dueño de la publicación
-    if (publicacion.usuario.id !== req.user?.id) {
+    // Cuando hacemos populate, publicacion.usuario ya es la entidad Usuario, no un Ref
+    const usuarioId = typeof publicacion.usuario === 'object' && 'id' in publicacion.usuario 
+      ? publicacion.usuario.id 
+      : undefined;
+      
+    if (usuarioId !== req.user?.id) {
       return res.status(403).json({ message: "No tienes permiso para eliminar esta publicación" });
     }
 

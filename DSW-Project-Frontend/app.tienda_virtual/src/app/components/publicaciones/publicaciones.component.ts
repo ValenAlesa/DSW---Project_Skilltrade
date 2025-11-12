@@ -9,6 +9,7 @@ import { User } from '../../models/user.js';
 import { LoginService } from '../../services/login.service.js';
 import Swal from 'sweetalert2';
 import { RolService } from '../../services/rol.service.js';
+import { AdminServiciosService, Servicio } from '../../services/admin-servicios.service.js';
 
 @Component({
   selector: 'app-publicaciones',
@@ -45,6 +46,9 @@ export class PublicacionesComponent implements OnInit {
   crearVisible = false;
   crearForm!: FormGroup;
 
+  /* Lista de servicios disponibles */
+  servicios: Servicio[] = [];
+
   /* Mapeo de servicios con emojis */
   private servicioMap: Record<string, string> = {
     limpieza: '🧹',
@@ -54,20 +58,12 @@ export class PublicacionesComponent implements OnInit {
     pintura: '🎨',
     carpinteria: '🔨',
     albañileria: '🧱',
+    albanileria: '🧱',
     tecnologia: '💻',
     software: '💻',
     mecanica: '⚙️',
-  };
-
-  private servicioIdNombreMap: Record<number, string> = {
-    1: 'Limpieza',
-    2: 'Plomería',
-    3: 'Electricidad',
-    4: 'Jardinería',
-    5: 'Pintura',
-    6: 'Carpintería',
-    7: 'Albañilería',
-    8: 'Tecnología',
+    ingles: '📚',
+    clase: '📚',
   };
 
 
@@ -79,7 +75,7 @@ export class PublicacionesComponent implements OnInit {
     private reserva: ReservaService,
     private auth: LoginService,
     private rolService: RolService,
-
+    private adminServiciosService: AdminServiciosService
   ) { }
 
 
@@ -87,6 +83,8 @@ export class PublicacionesComponent implements OnInit {
     this.rolService.esAdmin().subscribe(esAdmin => {
       this.esAdmin = esAdmin;
     });
+    
+    this.cargarServicios();
     
     this.filtro = this.fb.group({
       from: [''],
@@ -205,6 +203,17 @@ export class PublicacionesComponent implements OnInit {
     return d.toISOString().slice(0, 10);
   }
 
+  cargarServicios(): void {
+    this.adminServiciosService.getServicios().subscribe({
+      next: (servicios) => {
+        this.servicios = servicios;
+      },
+      error: (err) => {
+        console.error('Error cargando servicios:', err);
+      }
+    });
+  }
+
   buscarPublicaciones(): void {
     console.log('[buscarPublicaciones] Usuario:', this.user);
     console.log('[buscarPublicaciones] Usuario ID:', this.user?.id);
@@ -296,7 +305,11 @@ export class PublicacionesComponent implements OnInit {
     /*---- Obtener nombre del servicio ----*/
   getNombreServicio(servicio_id: number): string {
     const rel = this.publicaciones.find(p => p.servicio_id === servicio_id)?.servicio?.nombre;
-    return rel || this.servicioIdNombreMap[servicio_id] || 'Servicio';
+    if (rel) return rel;
+    
+    // Buscar en la lista de servicios cargados
+    const servicio = this.servicios.find(s => s.id === servicio_id);
+    return servicio?.nombre || 'Servicio';
   }
 
   /*---- Obtener emoji del servicio (usa nombre si está disponible) ----*/
