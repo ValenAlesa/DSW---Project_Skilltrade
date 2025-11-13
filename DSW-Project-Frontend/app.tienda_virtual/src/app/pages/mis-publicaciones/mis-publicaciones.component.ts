@@ -7,6 +7,7 @@ import { Publicacion } from '../../models/publicacion.model.js';
 import { LoginService } from '../../services/login.service.js';
 import { User } from '../../models/user.js';
 import Swal from 'sweetalert2';
+import { AdminServiciosService, Servicio } from '../../services/admin-servicios.service.js';
 
 @Component({
   selector: 'app-mis-publicaciones',
@@ -26,6 +27,9 @@ export class MisPublicacionesComponent implements OnInit {
   editarForm!: FormGroup;
   publicacionEditando?: Publicacion;
 
+  /* Lista de servicios disponibles */
+  servicios: Servicio[] = [];
+
   /* Mapeo de servicios con emojis */
   private servicioMap: Record<string, string> = {
     limpieza: '🧹',
@@ -38,30 +42,25 @@ export class MisPublicacionesComponent implements OnInit {
     tecnologia: '💻',
     software: '💻',
     mecanica: '⚙️',
-  };
-
-  private servicioIdNombreMap: Record<number, string> = {
-    1: 'Limpieza',
-    2: 'Plomería',
-    3: 'Electricidad',
-    4: 'Jardinería',
-    5: 'Pintura',
-    6: 'Carpintería',
-    7: 'Albañilería',
-    8: 'Tecnología',
+    ingles: '📚',
+    clase: '📚',
   };
 
   constructor(
     private fb: FormBuilder,
     private publicacionService: PublicacionService,
     private auth: LoginService,
-    private router: Router
+    private router: Router,
+    private adminServiciosService: AdminServiciosService
   ) {}
 
   ngOnInit(): void {
     this.auth.currentUserData.subscribe(user => {
       this.user = user;
     });
+
+    // Cargar servicios disponibles
+    this.cargarServicios();
 
     this.editarForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(120)]],
@@ -108,9 +107,24 @@ export class MisPublicacionesComponent implements OnInit {
     });
   }
 
+  cargarServicios(): void {
+    this.adminServiciosService.getServicios().subscribe({
+      next: (servicios) => {
+        this.servicios = servicios;
+      },
+      error: (err) => {
+        console.error('Error cargando servicios:', err);
+      }
+    });
+  }
+
   getNombreServicio(servicio_id: number): string {
     const rel = this.publicaciones.find(p => p.servicio_id === servicio_id)?.servicio?.nombre;
-    return rel || this.servicioIdNombreMap[servicio_id] || 'Servicio';
+    if (rel) return rel;
+    
+    // Buscar en la lista de servicios cargados
+    const servicio = this.servicios.find(s => s.id === servicio_id);
+    return servicio?.nombre || 'Servicio';
   }
 
   getEmojiServicio(pub: Publicacion): string {

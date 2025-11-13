@@ -59,8 +59,8 @@
           </label>
           <select formControlName="servicio_id" class="form-select-editar">
             <option [ngValue]="null" disabled>Seleccioná una categoría</option>
-            <option *ngFor="let id of [1,2,3,4,5,6,7,8]" [ngValue]="id">
-              {{ getNombreServicio(id) }}
+            <option *ngFor="let servicio of servicios" [ngValue]="servicio.id">
+              {{ servicio.nombre }}
             </option>
           </select>
         </div>
