@@ -8,7 +8,6 @@ import { FilterQuery } from "@mikro-orm/core";
 
 const em = orm.em
 
-/* -----Create a new reserva----- */
 async function create(req: Request, res: Response) {
   try {
     const body = req.body ?? {};
@@ -30,7 +29,6 @@ async function create(req: Request, res: Response) {
       });
     }
 
-    // Validate that the publication exists and is not owned by the same user
     const publicacion = await em.findOne(Publicacion, { id: publicacionId }, { populate: ['usuario'] });
     if (!publicacion) {
       return res.status(404).json({ message: 'Publicación no encontrada' });
@@ -39,7 +37,6 @@ async function create(req: Request, res: Response) {
       return res.status(400).json({ message: 'No puedes reservar tu propia publicación' });
     }
 
-    // Check if user already has a pending reservation for this publication
     const reservaExistente = await em.findOne(Reserva, {
       cliente: clienteId,
       publicacion: publicacionId,
@@ -50,7 +47,6 @@ async function create(req: Request, res: Response) {
       return res.status(400).json({ message: 'Ya tienes una reserva pendiente para esta publicación' });
     }
 
-    // Set current server date/time for reservation date
     const d = new Date();
 
     const reserva = em.create(Reserva, {
@@ -71,7 +67,6 @@ async function create(req: Request, res: Response) {
 }
 
 
-/* -----Find all reservas with optional filters----- */
 async function findAll(req: Request, res: Response) {
   try {
     const { from, to, clienteId, publicacionId, estado } = req.query;
@@ -112,7 +107,6 @@ async function findAll(req: Request, res: Response) {
 }
 
 
-/* -----Find one reserva by ID----- */
 async function findOne(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
@@ -125,7 +119,6 @@ async function findOne(req: Request, res: Response) {
 }
 
 
-/* -----Update a new reserva----- */
 async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id)
@@ -156,7 +149,7 @@ async function remove(req: Request, res: Response) {
   }
 };
 
-/* -----Find reservas by cliente/usuario----- */
+
 async function findByUsuario(req: Request, res: Response) {
   try {
     const usuarioId = Number.parseInt(req.params.id);

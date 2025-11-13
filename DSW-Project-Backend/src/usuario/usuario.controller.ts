@@ -55,7 +55,6 @@ async function add(req: Request, res: Response) {
     const em = orm.em.fork();
     const body = req.body as Partial<Usuario> & { password: string };
 
-    // Hash the password before saving
     body.password = await bcrypt.hash(body.password, 10);
 
     const usuario = em.create(Usuario, body as RequiredEntityData<Usuario>);
