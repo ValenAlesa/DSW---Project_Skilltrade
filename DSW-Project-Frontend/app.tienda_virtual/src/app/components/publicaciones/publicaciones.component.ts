@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PublicacionService } from '../../services/publicacion.service.js';
-import { Publicacion, PublicacionCreate } from '../../models/publicacion.model.js';
+import { Publicacion} from '../../models/publicacion.model.js';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -209,7 +209,8 @@ export class PublicacionesComponent implements OnInit {
         this.servicios = servicios;
       },
       error: (err) => {
-        console.error('Error cargando servicios:', err);
+        console.warn('No se pudieron cargar los servicios (el backend puede estar apagado):', err.message);
+        this.servicios = [];
       }
     });
   }

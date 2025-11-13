@@ -31,7 +31,7 @@ async function findAll(req: Request, res: Response) {
     const rawFrom = req.query.from as string | undefined;
     const rawTo = req.query.to as string | undefined;
 
-    // Parse date-only strings using LOCAL time, to avoid UTC shift issues
+  
     const from = parseLocalDay(rawFrom);
     const to = parseLocalDay(rawTo);
 
@@ -39,7 +39,7 @@ async function findAll(req: Request, res: Response) {
 
     const where: any = {};
 
-    // Date range filter (optional)
+    
     if (from || to) {
       const rango: any = {};
       if (from) {
@@ -58,7 +58,7 @@ async function findAll(req: Request, res: Response) {
       where,
       {
         orderBy: { fecha_publicacion: 'DESC' },
-        populate: ['servicio', 'usuario'], // include servicio and usuario for filtering
+        populate: ['servicio', 'usuario'], 
       }
     );
     res.status(200).json({ message: 'Publicaciones obtenidas', data: publicaciones });
@@ -117,7 +117,7 @@ async function create(req: Request, res: Response) {
         descripcion: String(descripcion).trim(),
         precio: p,
         servicio: em.getReference(Servicio, sid),
-        // Always use server current date-time to avoid client/timezone inconsistencies
+        
         fecha_publicacion: new Date(),
         estado: estado ?? 'Pendiente',
         usuario: em.getReference(Usuario, Number(req.user!.id)),

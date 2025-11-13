@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from './components/header/header.component'; // Adjust the path as needed
-import { FooterComponent } from './components/footer/footer.component'; // If you use <app-footer>
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
