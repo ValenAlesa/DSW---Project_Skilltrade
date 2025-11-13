@@ -15,16 +15,15 @@ import { RequestContext } from "@mikro-orm/core";
 import { orm, syncSchema } from "./shared/db/orm.js";
 import { reservaRouter } from "./reserva/reserva.routes.js";
 
-/* Create Express app */
+/* Crear api express */
 const app = express();
 
 /* CORS Middleware */
 app.use(cors());
 
-/* Body parser middleware */
 app.use(express.json());
 
-/* MikroORM Request Context Middleware */
+/* MikroORM Middleware */
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
 });
@@ -52,7 +51,7 @@ app.use((err: any, req: any, res: any, next: any) => {
   res.status(status).json({ message: err?.message || "Error interno del servidor" });
 });
 
-/* Start the server */
+/* Inicializar el servidor */
 await syncSchema();
 
 app.listen(3000, () => {
