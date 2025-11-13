@@ -34,6 +34,8 @@ export class AdminServiciosComponent implements OnInit {
     tecnologia: '💻',
     software: '💻',
     mecanica: '⚙️',
+    ingles: '📚',
+    clase: '📚',
   };
 
   constructor(
